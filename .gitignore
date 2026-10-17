@@ -1,0 +1,10 @@
+node_modules
+apps/api/data/*-wal
+apps/api/data/*-shm
+apps/api/data/uploads/*
+apps/api/data/certs/*
+apps/web/dist
+*.log
+.env
+.DS_Store
+.vercel

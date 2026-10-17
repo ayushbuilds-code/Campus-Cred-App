@@ -1,0 +1,140 @@
+{
+  "generated_at": "2026-10-12T06:12:40.511Z",
+  "evidence": [
+    {
+      "area": "Seed",
+      "check": "4 clubs x 10 members (1 President, 1 VP, 1 Treasurer, 7 members)",
+      "result": "pass"
+    },
+    {
+      "area": "Seed",
+      "check": "Second President in one club is rejected by a database constraint",
+      "result": "pass"
+    },
+    {
+      "area": "Enrolment",
+      "check": "Join request, coordinator approval, club limit (2), capacity (full club blocks joins)",
+      "result": "pass"
+    },
+    {
+      "area": "End-to-end Club Day",
+      "check": "ent: plan > advisor approve > check-in (7/10) > 5 submissions > scored > published > 5 certificates > report row correct",
+      "result": "pass"
+    },
+    {
+      "area": "End-to-end Club Day",
+      "check": "coding: plan > advisor approve > check-in (7/10) > 5 submissions > scored > published > 5 certificates > report row correct",
+      "result": "pass"
+    },
+    {
+      "area": "End-to-end Club Day",
+      "check": "cultural: plan > advisor approve > check-in (7/10) > 5 submissions > scored > published > 5 certificates > report row correct",
+      "result": "pass"
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Screenshot of a QR shared and used 61 s later",
+      "result": "410 \"QR has expired\", no attendance recorded"
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Forged / edited token",
+      "result": "400 \"QR code is not valid\""
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Student from another club scans a valid QR",
+      "result": "403 \"Only members of this club can check in\""
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Check-in from outside campus (geo block mode) / location not shared",
+      "result": "403, nothing recorded"
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Duplicate check-in / 6-digit code / wrong code / late arrival",
+      "result": "409 / 201 / 410 / recorded as \"late\" and flagged"
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Outside campus in \"flag\" mode",
+      "result": "201 recorded with flag \"Outside campus (xx m away)\" for the coordinator to review"
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Attendance correction by coordinator",
+      "result": "Reason mandatory (400 without), audit log stores who / old / new / reason; student attempt 403"
+    },
+    {
+      "area": "Check-in integrity",
+      "check": "Check-in opened 2 days after the Club Day (late or rescheduled session)",
+      "result": "student sees the open check-in on Home; check-in succeeds"
+    },
+    {
+      "area": "Certificates",
+      "check": "20 certificates verified by public link (holder, status, record hash recomputed, valid PDF)",
+      "result": "20/20 pass; unknown ID returns 404"
+    },
+    {
+      "area": "Certificates",
+      "check": "Original PDF vs the same PDF with one byte changed",
+      "result": "original: match; tampered: rejected (\"altered\")"
+    },
+    {
+      "area": "Certificates",
+      "check": "Achievement certificate issue then revoke",
+      "result": "verification page shows \"revoked\""
+    },
+    {
+      "area": "Transcript",
+      "check": "JSON + PDF transcript, repeat download returns the same verified file, other students blocked",
+      "result": "pass"
+    },
+    {
+      "area": "Events",
+      "check": "200 registrations, 50 teams x 4 formed concurrently (50 creates + 150 joins at once)",
+      "result": "200 rows, 200 distinct students, 0 duplicates, 0 without team; 201st registration and 5th team member rejected; 6 simultaneous double-taps create 1 row"
+    },
+    {
+      "area": "Events",
+      "check": "Results entry, certificates, inter-college duty leave approval",
+      "result": "pass"
+    },
+    {
+      "area": "Permissions",
+      "check": "15 forbidden actions (cross-club coordinator access, student edits to attendance / scores / clubs / dashboards)",
+      "result": "all 15 return 403"
+    },
+    {
+      "area": "Permissions",
+      "check": "Student lists submissions: only own row, unpublished score hidden",
+      "result": "pass"
+    },
+    {
+      "area": "Submissions",
+      "check": ".exe rejected, PDF accepted, other club cannot download, submission after deadline rejected",
+      "result": "pass"
+    },
+    {
+      "area": "Reports",
+      "check": "Monthly report 2026-09: held, check-ins, submissions, attendance %, average score for 4 clubs recomputed independently from raw rows",
+      "result": "all values equal"
+    },
+    {
+      "area": "Reports",
+      "check": "Monthly report 2026-10: held, check-ins, submissions, attendance %, average score for 4 clubs recomputed independently from raw rows",
+      "result": "all values equal"
+    },
+    {
+      "area": "Dashboards",
+      "check": "Overview totals, top contributors ordering, zero-participation list equals raw query; coordinator sees only own club",
+      "result": "pass"
+    },
+    {
+      "area": "Automation",
+      "check": "3-day announcement sent once with topic, venue, deliverable and deadline; plan-due reminders; month-end report generator",
+      "result": "pass"
+    }
+  ]
+}

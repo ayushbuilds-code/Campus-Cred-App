@@ -1,0 +1,87 @@
+[
+  {
+    "check": "login page lists demo accounts",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "wrong password shows a readable error",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "president home shows \"Club Days ready to run\"",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "clubs page lists 4 clubs",
+    "pass": true,
+    "detail": "4"
+  },
+  {
+    "check": "live screen shows a rotating QR and a 6-digit code",
+    "pass": true,
+    "detail": "173782"
+  },
+  {
+    "check": "student home shows check-in banner",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "student checks in with the 6-digit code",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "president live count updates to 1 / 10",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "student submits work",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "coordinator scores and publishes; a certificate is issued",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "public verification page works without login",
+    "pass": true,
+    "detail": "CC-2026-7B8A4A56"
+  },
+  {
+    "check": "certificate PDF downloads",
+    "pass": true,
+    "detail": "6878 bytes"
+  },
+  {
+    "check": "tampered PDF is rejected in the UI",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "transcript PDF downloads",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "advisor approves a pending plan",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "dashboard renders charts",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "check": "no horizontal scrolling at 360 px on main pages",
+    "pass": true,
+    "detail": "[]"
+  }
+]

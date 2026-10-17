@@ -1,0 +1,19 @@
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/figtree';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-paper font-sans text-ink antialiased; }
+  h1, h2, h3 { @apply font-display tracking-tight; }
+  :focus-visible { outline: 2px solid #0E6B63; outline-offset: 2px; border-radius: 6px; }
+  ::selection { background: #E3F0EE; }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+}
+@layer components {
+  .input { @apply w-full min-h-[44px] rounded-lg border border-line bg-white px-3 text-[15px] text-ink placeholder:text-ink-40 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/25 disabled:bg-paper; }
+  textarea.input { @apply py-2 min-h-[88px]; }
+  .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "campuscred",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CampusCred: verified co-curricular platform for MSOT clubs (enrolment to certificate)",
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "setup": "npm install && npm run seed && npm run build",
+    "start": "npm --workspace apps/api run start",
+    "quickstart": "npm run setup && npm start",
+    "dev": "node scripts/dev.mjs",
+    "seed": "npm --workspace apps/api run seed",
+    "build": "npm --workspace apps/web run build",
+    "test": "npm --workspace apps/api run test",
+    "load-test": "node load-tests/checkin-load.mjs"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true,
+    "esbuild@0.21.5": true,
+    "fsevents@2.3.3": true
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.10.0",
+    "cors": "^2.8.5",
+    "express": "^5.0.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pdfkit": "^0.15.1",
+    "qrcode": "^1.5.4",
+    "zod": "^3.23.8"
+  }
+}

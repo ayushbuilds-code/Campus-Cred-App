@@ -1,0 +1,12 @@
+# NOTE: not tested in the build environment. `docker compose up --build` then open http://localhost:4000
+services:
+  campuscred:
+    build: .
+    ports: ["4000:4000"]
+    environment:
+      JWT_SECRET: "replace-this-with-a-long-random-string-before-real-use"
+      PUBLIC_URL: "http://localhost:4000"
+      DEMO_MODE: "1"
+    volumes: ["campuscred-data:/app/apps/api/data"]
+volumes:
+  campuscred-data:

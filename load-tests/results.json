@@ -1,0 +1,179 @@
+{
+  "machine": {
+    "cpus": 1,
+    "model": "Intel(R) Xeon(R) Processor @ 2.80GHz",
+    "node": "v22.22.2",
+    "platform": "linux"
+  },
+  "database": "SQLite (WAL) on local disk, single API process",
+  "trials": [
+    {
+      "trial": 1,
+      "concurrent": 100,
+      "ok": 100,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 189,
+      "p95_ms": 246,
+      "p99_ms": 256,
+      "max_ms": 257,
+      "wall_ms": 304,
+      "rows_saved": 100,
+      "distinct_students": 100
+    },
+    {
+      "trial": 2,
+      "concurrent": 100,
+      "ok": 100,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 134,
+      "p95_ms": 210,
+      "p99_ms": 215,
+      "max_ms": 219,
+      "wall_ms": 234,
+      "rows_saved": 100,
+      "distinct_students": 100
+    },
+    {
+      "trial": 3,
+      "concurrent": 100,
+      "ok": 100,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 151,
+      "p95_ms": 256,
+      "p99_ms": 263,
+      "max_ms": 268,
+      "wall_ms": 284,
+      "rows_saved": 100,
+      "distinct_students": 100
+    },
+    {
+      "trial": 1,
+      "concurrent": 300,
+      "ok": 300,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 460,
+      "p95_ms": 678,
+      "p99_ms": 693,
+      "max_ms": 697,
+      "wall_ms": 787,
+      "rows_saved": 300,
+      "distinct_students": 300
+    },
+    {
+      "trial": 2,
+      "concurrent": 300,
+      "ok": 300,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 426,
+      "p95_ms": 566,
+      "p99_ms": 575,
+      "max_ms": 578,
+      "wall_ms": 661,
+      "rows_saved": 300,
+      "distinct_students": 300
+    },
+    {
+      "trial": 3,
+      "concurrent": 300,
+      "ok": 300,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 368,
+      "p95_ms": 507,
+      "p99_ms": 520,
+      "max_ms": 523,
+      "wall_ms": 597,
+      "rows_saved": 300,
+      "distinct_students": 300
+    },
+    {
+      "trial": 1,
+      "concurrent": 500,
+      "ok": 500,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 612,
+      "p95_ms": 991,
+      "p99_ms": 1017,
+      "max_ms": 1023,
+      "wall_ms": 1171,
+      "rows_saved": 500,
+      "distinct_students": 500
+    },
+    {
+      "trial": 2,
+      "concurrent": 500,
+      "ok": 500,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 609,
+      "p95_ms": 919,
+      "p99_ms": 931,
+      "max_ms": 947,
+      "wall_ms": 1081,
+      "rows_saved": 500,
+      "distinct_students": 500
+    },
+    {
+      "trial": 3,
+      "concurrent": 500,
+      "ok": 500,
+      "errors": 0,
+      "error_rate_pct": 0,
+      "p50_ms": 538,
+      "p95_ms": 840,
+      "p99_ms": 871,
+      "max_ms": 875,
+      "wall_ms": 984,
+      "rows_saved": 500,
+      "distinct_students": 500
+    }
+  ],
+  "live_screen": {
+    "roster": 500,
+    "polls": 20,
+    "p50_ms": 2,
+    "p95_ms": 11,
+    "max_ms": 21
+  },
+  "control": [
+    {
+      "endpoint": "GET /health (no auth, no database)",
+      "concurrent": 500,
+      "p50_ms": 237,
+      "p95_ms": 330,
+      "max_ms": 341
+    },
+    {
+      "endpoint": "GET /health (no auth, no database)",
+      "concurrent": 500,
+      "p50_ms": 222,
+      "p95_ms": 308,
+      "max_ms": 315
+    },
+    {
+      "endpoint": "GET /health (no auth, no database)",
+      "concurrent": 500,
+      "p50_ms": 274,
+      "p95_ms": 447,
+      "max_ms": 461
+    }
+  ],
+  "spread": {
+    "checkins": 500,
+    "spread_seconds": 60,
+    "arrival_rate_per_s": 8.3,
+    "ok": 500,
+    "errors": 0,
+    "error_rate_pct": 0,
+    "p50_ms": 3,
+    "p95_ms": 8,
+    "p99_ms": 14,
+    "max_ms": 29
+  }
+}
