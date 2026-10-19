@@ -36,7 +36,7 @@ export function defaultConfig(overrides = {}) {
   }
 
   return {
-    port: Number(process.env.PORT || 3000),
+    port: Number(process.env.PORT || 4000),
     jwtSecret: process.env.JWT_SECRET || 'dev-only-secret-change-me-before-deploying',
     dbPath,
     uploadDir,
