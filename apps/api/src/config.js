@@ -36,13 +36,13 @@ export function defaultConfig(overrides = {}) {
   }
 
   return {
-    port: Number(process.env.PORT || 4000),
+    port: Number(process.env.PORT || 3000),
     jwtSecret: process.env.JWT_SECRET || 'dev-only-secret-change-me-before-deploying',
     dbPath,
     uploadDir,
     certDir,
     // Base URL that certificate QR codes point to (the web app's public address).
-    publicUrl: (process.env.PUBLIC_URL || 'http://localhost:4000').replace(/\/$/, ''),
+    publicUrl: (process.env.PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')).replace(/\/$/, ''),
     // QR / one-time code rotation period in seconds.
     rotateSeconds: Number(process.env.ROTATE_SECONDS || 20),
     demoMode: process.env.DEMO_MODE !== '0',

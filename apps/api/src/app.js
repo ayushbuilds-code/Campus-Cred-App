@@ -71,14 +71,15 @@ export function createApp({ cfg, db, now }) {
   api.use(limited({ windowMs: 60 * 1000, limit: 900, skip: (req) => req.path.startsWith('/checkin') }));
   for (const mod of [dayRoutes, authRoutes, miscRoutes, clubRoutes, workRoutes, eventRoutes, certRoutes, insightRoutes]) api.use(mod(ctx));
   api.get('/health', (req, res) => res.json({ ok: true, time: new Date(ctx.now()).toISOString() }));
-  api.use((req, res) => res.status(404).json({ error: 'Not found' }));
   app.use('/api/v1', api);
   app.use('/v1', api);
+  app.use('/api', api);
 
   if (fs.existsSync(path.join(cfg.webDist, 'index.html'))) {
     app.use(express.static(cfg.webDist, { index: false, maxAge: '1h' }));
     app.use((req, res, next) => {
-      if (req.method !== 'GET' || req.path.startsWith('/api')) return next();
+      if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+      if (req.path.startsWith('/api') || req.path.startsWith('/v1')) return next();
       res.sendFile(path.join(cfg.webDist, 'index.html'));
     });
   }
