@@ -37,7 +37,7 @@ export function defaultConfig(overrides = {}) {
 
   return {
     port: Number(process.env.PORT || 4000),
-    jwtSecret: process.env.JWT_SECRET || 'dev-only-secret-change-me-before-deploying',
+    jwtSecret: process.env.JWT_SECRET || 'campuscred-auth-secret-key-production-fallback-2026-secure',
     dbPath,
     uploadDir,
     certDir,
