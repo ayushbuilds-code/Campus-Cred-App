@@ -1,2 +1,5 @@
 { "name": "CampusCred", "short_name": "CampusCred", "start_url": "/", "display": "standalone", "background_color": "#F3F5F2", "theme_color": "#10242B",
-  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }] }
+  "icons": [
+    { "src": "/logo.jpg", "sizes": "1024x1024", "type": "image/jpeg", "purpose": "any maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ] }
