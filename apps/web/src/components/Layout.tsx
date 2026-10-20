@@ -188,19 +188,12 @@ export default function Layout() {
 
           <div className="flex gap-2">
             <button
-              onClick={() => setShowDemoModal(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-white/10 py-1.5 text-xs font-semibold text-white hover:bg-white/20 transition-colors"
-              title="Quick test accounts"
-            >
-              <Icon name="users" size={14} />
-              Switch Role
-            </button>
-            <button
               onClick={logout}
-              className="flex items-center justify-center rounded-lg border border-white/10 py-1.5 px-2.5 text-xs font-semibold text-white/70 hover:bg-danger/20 hover:text-danger transition-colors"
+              className="w-full flex items-center justify-center gap-2 rounded-lg border border-white/10 py-2 px-3 text-xs font-semibold text-white/80 hover:bg-danger/20 hover:text-danger hover:border-danger/30 transition-colors"
               title="Sign out"
             >
               <Icon name="logout" size={15} />
+              <span>Sign out</span>
             </button>
           </div>
         </div>
@@ -243,13 +236,6 @@ export default function Layout() {
           </div>
 
           <div className="flex items-center gap-2.5">
-            <button
-              onClick={() => setShowDemoModal(true)}
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-line bg-white px-2.5 py-1.5 text-xs font-semibold text-ink hover:border-brand hover:text-brand transition-colors shadow-xs"
-            >
-              <Icon name="users" size={14} />
-              <span>Switch Role</span>
-            </button>
             {bell}
           </div>
         </header>
@@ -307,13 +293,6 @@ export default function Layout() {
                   <span className="truncate max-w-full">{i.label}</span>
                 </NavLink>
               ))}
-              <button
-                onClick={() => { setMore(false); setShowDemoModal(true); }}
-                className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-brand/30 bg-brand-sunken/30 p-3 text-xs font-semibold text-brand hover:border-brand transition-all text-center"
-              >
-                <Icon name="users" size={20} />
-                <span>Switch Role</span>
-              </button>
               <NavLink
                 to="/notifications"
                 onClick={() => setMore(false)}
