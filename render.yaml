@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     region: oregon
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: node apps/api/src/seed.js && node apps/api/src/server.js
     envVars:
       - key: NODE_VERSION
