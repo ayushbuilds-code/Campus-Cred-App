@@ -131,9 +131,7 @@ export default function Layout() {
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col bg-ink p-4 text-white md:flex shadow-xl">
         <div className="mb-4 flex items-center justify-between px-2 pt-1">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-white font-bold text-lg">
-              C
-            </div>
+            <img src="/logo.png" alt="CampusCred" className="h-9 w-9 rounded-xl object-cover" />
             <div>
               <span className="font-display text-lg font-bold tracking-tight">CampusCred</span>
               <span className="block text-[10px] text-white/50 uppercase tracking-widest font-mono">Multi-Campus</span>
@@ -208,9 +206,7 @@ export default function Layout() {
         >
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 md:hidden">
-              <div className="flex h-7 w-7 items-center justify-center rounded-md bg-brand text-white font-bold text-sm">
-                C
-              </div>
+              <img src="/logo.png" alt="CampusCred" className="h-7 w-7 rounded-lg object-cover" />
               <span className="font-display text-base font-bold">CampusCred</span>
             </div>
 

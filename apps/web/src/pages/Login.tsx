@@ -39,9 +39,7 @@ export default function Login() {
       {/* Left Brand Panel */}
       <section className="flex flex-col justify-between bg-ink p-6 text-white md:sticky md:top-0 md:h-screen md:p-12">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white font-bold text-xl">
-            C
-          </div>
+          <img src="/logo.png" alt="CampusCred" className="h-10 w-10 rounded-xl object-cover" />
           <div>
             <span className="font-display text-2xl font-bold tracking-tight">CampusCred</span>
             <span className="block text-[11px] text-white/50 uppercase tracking-widest font-mono">Multi-Campus Management</span>
