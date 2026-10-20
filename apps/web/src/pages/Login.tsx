@@ -80,8 +80,8 @@ export default function Login() {
 
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
             <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Bengaluru Campus</span>
-            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Mumbai Campus</span>
-            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Delhi NCR Campus</span>
+            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Gazhiabad Campus</span>
+            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Jaipur Campus</span>
           </div>
         </div>
 
