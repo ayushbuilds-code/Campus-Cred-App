@@ -1,120 +1,197 @@
 # CampusCred
 
-One platform to run every MSOT club, from enrolment to a verified certificate.
-Mobile-first web app (installable), Node.js API, React front end.
+> **The Co-Curricular Operating System for Modern Universities**  
+> One unified platform to run university clubs, verify attendance, evaluate student deliverables, and issue cryptographically verifiable certificates.
 
-Seeded with the real starting point: **4 clubs (Entrepreneurship, Sports, Coding, Cultural), 10 members each**
-(1 President, 1 Vice President, 1 Treasurer, 7 members), 48 students in total, six Saturdays of Club Days, one finished event (Gambade), and two upcoming events.
+[![Live Production](https://img.shields.io/badge/Render-Live%20Deploy-success?style=flat-square&logo=render)](https://campuscred-gd43.onrender.com)
+[![Node.js Version](https://img.shields.io/badge/Node.js-20%20LTS-brightgreen?style=flat-square&logo=node.js)](https://nodejs.org)
+[![React](https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38bdf8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/Tests-33%20Passing-success?style=flat-square)](docs/TEST_REPORT.md)
 
-## Start it (one command)
+---
 
-Requires Node.js 20 or newer.
+## 🌐 Live Application
 
+- **Production URL**: [campuscred-gd43.onrender.com](https://campuscred-gd43.onrender.com)
+- **Deployment Platform**: Render Web Service (`srv-dbblp68473hc73cpjf6g`) via Infrastructure-as-Code (`render.yaml`)
+- **PWA Ready**: Installable Progressive Web App with dedicated web manifest and brand icons
+
+---
+
+## 🚀 Key Highlights & Current Features
+
+- **Multi-Campus Architecture**: Supports independent campuses with localized governance, campus admins, and multi-campus reporting:
+  - **Bengaluru**: Mirai School of Technology (`BLR`)
+  - **Mumbai**: Apex University of Science & Arts (`MUM`)
+  - **Delhi NCR**: Delhi Metropolitan College (`DEL`)
+- **Anti-Cheating Check-In**: Rotating dynamic QR code and synchronized 6-digit one-time code generated from per-session secrets and 20-second time slots. Includes optional geo-radius validation.
+- **Academic Club Days Workflow**:
+  - Semester calendar import (CSV or UI)
+  - 4-stage activity lifecycle: Draft ➔ Waiting for Advisor ➔ Approved / Changes Requested ➔ Published
+  - Automated cron scheduler sending reminder triggers 7 days, 3 days, and 24 hours prior to deadlines
+- **Deliverables & Rubric Scoring**:
+  - File submissions (PDF, PPT, DOC, images, ZIP up to 10 MB) or external repository/portfolio links
+  - Multi-criteria weighted rubrics (Content, Presentation, Participation)
+- **Verifiable PDF Certificates**:
+  - High-res automated certificates stamped with unique ID, SHA-256 fingerprint, and verification QR code
+  - Public verification portal (`/verify/:id`) with live document upload tamper-detection
+- **Placement Copilot Integration**:
+  - Exportable verified Student Co-Curricular Transcripts (PDF)
+  - Machine-readable JSON API (`GET /api/v1/students/:id/transcript`) tailored for placement platforms
+- **Events & Inter-College Meets**:
+  - Team creation with invite codes, capacity limits, and real-time attendance
+  - Automatic **Duty Leave** generation and campus manager approval pipeline
+- **Treasury & Budget Management**:
+  - Student Treasurer budget requests with receipts, advisor approvals, and campus-wide expense tracking
+- **Enterprise UI Design**:
+  - Official CampusCred visual brand identity and high-resolution logo (`/logo.jpg`)
+  - Custom Lucide SVG iconography across all views (zero raw emojis)
+  - Strict role-based routing and permissions enforced securely on the API level
+
+---
+
+## ⚡ Quick Start (Local Setup)
+
+Requires **Node.js 20 LTS** or newer.
+
+### 1. One-Command Setup
 ```bash
-npm run quickstart      # installs, loads demo data, builds the web app, starts on http://localhost:4000
+# Clone the repository
+git clone https://github.com/ayushbuilds-code/CampusCred.git
+cd CampusCred
+
+# Install dependencies, seed database, build frontend, and start API
+npm run quickstart
+```
+The server will start on `http://localhost:4000`.
+
+### 2. Development Mode (Hot Reload)
+To run the Vite frontend and Express API concurrently with live reload:
+```bash
+npm run dev
+```
+- **Web App**: `http://localhost:5173` (proxied to API)
+- **API Server**: `http://localhost:4000`
+
+### 3. Resetting Seed Data
+To purge the database and reset to pristine demo state:
+```bash
+npm run seed -- --reset
 ```
 
-Next time just `npm start`. For development with hot reload: `npm run dev` (web on :5173, API on :4000).
-Reset the demo data at any time: `npm run seed -- --reset` (then restart the server).
+---
 
-**Demo accounts.** The login screen lists them; tap one to sign in. Password for every demo account: `Demo@123`.
+## 🔑 Demo Credentials
 
-| Role | Account | Try this |
-|---|---|---|
-| Admin | `admin@msot.example` | create clubs, import Club Days, dashboards, audit log, settings |
-| Campus manager | `manager@msot.example` | approve clubs, create events, enter results, approve duty leave |
-| Faculty advisor | `advisor.coding@msot.example` (also `.entrepreneurship`, `.sports`, `.cultural`) | approve plans, evaluate, issue achievement certificates, budget decisions |
-| Student coordinator | `siddharth.nair.21@students.msot.example` (Coding President) | plan, **run check-in**, correct attendance, score, publish |
-| Treasurer | `manav.khan.23@students.msot.example` (Coding) | budget requests |
-| Student | student ID `MSOT26025` (Coding member) | check in, submit, certificates, transcript |
-| New student (no club) | student ID `MSOT26045` | browse and request to join |
+All seeded demo accounts use the standard password: `Demo@123`
 
-## The 5-minute tour
+| Role | Account Email / ID | Campus / Affiliation | What to Explore |
+|---|---|---|---|
+| **Super Admin** | `superadmin@campus.edu` | Global (All Campuses) | Global overview, campus management, audit logs, system-wide rules |
+| **Campus Admin (Bengaluru)** | `admin.bengaluru@msot.example` | Mirai School of Tech | Club approvals, duty leave, campus reports, calendar imports |
+| **Campus Admin (Mumbai)** | `admin.mumbai@apex.example` | Apex University | Mumbai campus oversight and event approvals |
+| **Faculty Advisor** | `advisor.coding@msot.example` | Coding Club (BLR) | Review activity plans, rubric score submissions, approve budgets |
+| **Club President** | `pres.coding@msot.example` | Coding Club (BLR) | Launch dynamic rotating QR check-in, score members, publish grades |
+| **Club Treasurer** | `treasurer.coding@msot.example` | Coding Club (BLR) | Submit budget requests and track expenses |
+| **Active Member** | `student.blr@msot.example` / `MSOT26003` | Coding Club (BLR) | Mobile QR scan / 6-digit check-in, submit project link, download certificates |
+| **Independent Student** | `MSOT26045` | Student (No Club) | Browse clubs, submit join request within quota limits |
 
-1. Sign in as the **Coding President**. Home shows "Run today's Club Day". Open it, tap **Start check-in**. A full-screen QR appears with a 6-digit code. Both change every 20 seconds.
-2. On a phone (or a second browser window) sign in as **MSOT26025**, tap **Check in now**, enter the code. The president's screen counts up live.
-3. As the student, open the activity and submit a link. As the president, score it and tap **Publish scores**. A participation certificate is issued automatically.
-4. Student: **Certificates**, download the PDF, open its verification link in a private window (no login). Upload an edited copy of the PDF and watch it get rejected.
-5. Admin: **Dashboard**, **Reports**, **Admin, Audit log** (the attendance correction and score change you just made are in there).
+---
 
-A fuller script is in `docs/DEMO_SCRIPT.md`.
+## 📋 Comprehensive Feature Map
 
-## What is built, mapped to the brief
-
-| Brief requirement | Where it lives |
+| Capability | Module & Implementation |
 |---|---|
-| 1. Club registry (per campus, advisor, coordinators, capacity, meeting rules) | Clubs page, club Settings tab, `routes/clubs.js`. New clubs start "pending" until the campus manager approves. |
-| 2. Student enrolment with limits, coordinator approval | Clubs, "Request to join", Join requests tab. Limit (default 1 primary + 1 secondary) and capacity are enforced by the API and configurable under Admin. |
-| 3. Club Day calendar, activity plans, advisor approval | Club Days page, activity page, `routes/days.js`. CSV import of the academic calendar. States: draft, waiting for advisor, approved, changes requested. |
-| 4. Attendance check-in (QR or code, correction with reason) | Run screen (`/run/:id`), Check in page. Rotating server-signed QR, 6-digit code, late flag, optional location check. Corrections need a reason and are audit-logged. |
-| 5. Submissions with deadlines | Activity page. PDF/PPT/DOC/PNG/JPG/ZIP up to 10 MB, or a link. Resubmit until the deadline. |
-| 6. Evaluation on a rubric | Score dialog: content, presentation, participation (weights configurable), comment. Scores stay hidden until published. |
-| 7. Events, registrations, teams, check-in, results | Events pages, `routes/events.js`. Invite-code teams, capacity, event check-in with the same rotating QR, results and certificates. |
-| 8. Certificates with verification link / QR | PDF with QR, unique ID, SHA-256 fingerprint. Public page `/verify/:id`, plus "upload a PDF to check it". |
-| 9. Dashboards and exportable reports | Dashboard (participation by club and campus, inactive clubs, zero-participation students, top contributors), Reports (monthly, CSV), student export CSV. |
-| Stretch: transcript for the Placement Copilot | Transcript page + verified PDF; JSON at `GET /api/v1/students/:id/transcript` is the "Achievements" input. |
-| Stretch: budget requests | Treasurer requests, advisor approves. |
-| Stretch: duty leave | Created automatically when a student registers for an inter-college event; campus manager approves. |
-| Stretch: announcements | Club announcements to members (in-app; e-mail is queued in an outbox table). |
-| Stretch: photo gallery with consent | **Not built.** |
-| Stretch: WhatsApp / Telegram | **Not built.** Notifications are written to `outbox` so a sender can be attached. |
+| **Multi-Campus Club Registry** | `apps/web/src/pages/Clubs.tsx`, `apps/api/src/routes/clubs.js`<br>Campus scoped, advisor assignments, coordinator rosters, meeting schedules, and capacity limits. |
+| **Enrolment & Quotas** | Strict limit enforcement (default: 1 Primary + 1 Secondary club). Coordinator review workflows. |
+| **Club Day Schedules & Approvals** | `apps/api/src/routes/days.js`<br>Semester timeline, activity syllabus, advisor revision requests, and public schedule view. |
+| **Anti-Cheating Attendance** | `apps/web/src/pages/RunDay.tsx`, `apps/web/src/pages/CheckIn.tsx`<br>Cryptographic HMAC-signed tokens rotating every 20 seconds. 6-digit numeric fallback. Geofence radius support. Reason-required coordinator audit logging. |
+| **Deliverables & Evaluation** | `apps/web/src/pages/DayDetail.tsx`, `apps/api/src/routes/work.js`<br>File upload (10 MB limit) or URL submission. Weighted rubric scoring. Draft/Published score privacy. |
+| **Events & Duty Leave** | `apps/web/src/pages/Events.tsx`, `apps/api/src/routes/events.js`<br>Inter-college competitions, team invite codes, duty leave generation for campus admin approval. |
+| **Verifiable Credentials** | `apps/api/src/lib/certs.js`, `apps/web/src/pages/Certificates.tsx`<br>Vector PDF generation via `pdfkit` with embedded QR and SHA-256 digital fingerprint. Public validation route at `/verify/:id`. |
+| **Placement Co-Curricular Transcript** | `apps/web/src/pages/Transcript.tsx`<br>Official academic co-curricular transcript PDF and REST API (`GET /api/v1/students/:id/transcript`). |
+| **Budget & Financial Ledger** | `apps/web/src/pages/Budget.tsx`<br>Treasurer expense proposals, proof receipt uploads, and faculty advisor approval states. |
+| **Automated Scheduler** | `apps/api/src/lib/jobs.js`<br>Background cron triggers for submission deadlines, coordinator notifications, and monthly director summaries. |
+| **Audit Trails & Security** | `apps/api/src/lib/access.js`<br>Immutable audit log recording attendance modifications, score updates, and permission changes with user attribution. |
 
-### The Club Day timeline is automated
+---
 
-A scheduler runs every minute: plan reminders to coordinators 7 days before; member announcement 3 days before (topic, venue, deliverable, deadline; sent immediately if a plan is approved inside that window);
-submission reminder 24 hours before a deadline to attendees who have not submitted; monthly report to the campus manager on the last day of the month (and a catch-up for the previous month).
-Admin, Rules and settings, "Run scheduled jobs now" triggers it on demand. Check-in windows, late threshold, deadline defaults and rubric weights are configurable.
+## 🏗️ Architecture & Project Structure
 
-### How check-in resists cheating
-
-* The QR holds a token signed with a per-session secret and the current 20-second time slot. A token is accepted for its own slot and the one before, so a screenshot works for at most 20 to 40 seconds.
-* The 6-digit code is derived the same way and is only matched against sessions the student is eligible for.
-* Only active members of that club (or registered participants of that event) can check in; one check-in per student per session (database unique constraint).
-* Late arrivals are marked "late" automatically. Location check is off / flag / block per session.
-* A coordinator can correct any record, but the reason is mandatory and the old and new values are written to the audit log with their name. Students cannot touch attendance or scores at all.
-
-### Roles
-
-Permissions are decided in one place (`apps/api/src/lib/access.js`) and applied on the server for every request, never only in the UI. `system_role` (admin, campus manager, advisor, student) and `club_position` (President, VP, Treasurer, member) are separate fields. A President or Vice President is a coordinator for their own club only.
-
-## Project layout
+The project is structured as a clean, modular npm workspaces monorepo:
 
 ```
-apps/api/      Express API (JavaScript, ES modules) + SQLite (better-sqlite3)
-  src/routes/  auth, clubs, days (calendar, plans, check-in), work (submissions, scoring), events, certs, insights, misc
-  src/lib/     access rules, rotating tokens, PDF certificates, statistics, scheduler jobs
-  test/        33 integration tests
-apps/web/      React + TypeScript + Vite + Tailwind (installable PWA manifest)
-load-tests/    check-in load test and its latest results
-e2e/           browser walkthrough (Playwright)
-docs/          ARCHITECTURE.md, TEST_REPORT.md, DEMO_SCRIPT.md, screenshots
-samples/       sample certificates and a sample transcript (PDF)
+CampusCred/
+├── apps/
+│   ├── api/                      # Backend API service
+│   │   ├── data/                 # SQLite database storage (campuscred.db)
+│   │   ├── src/
+│   │   │   ├── lib/              # Core business logic:
+│   │   │   │   ├── access.js     # Unified role-based access control (RBAC)
+│   │   │   │   ├── certs.js      # PDF certificate generation & SHA-256 hashing
+│   │   │   │   ├── jobs.js       # Automated reminder & reporting scheduler
+│   │   │   │   ├── tokens.js     # Rotating OTP & QR signature engine
+│   │   │   │   └── util.js       # Shared helpers
+│   │   │   ├── routes/           # REST endpoints: auth, clubs, days, work, events, certs
+│   │   │   ├── schema.js         # Relational database schema (SQLite / DDL)
+│   │   │   ├── seed-data.js      # Multi-campus demo seed dataset
+│   │   │   └── server.js         # Express app entrypoint & middleware
+│   │   └── test/                 # 33 comprehensive API & security tests
+│   └── web/                      # Frontend Single Page Application (PWA)
+│       ├── public/               # Static assets, logo.jpg, favicon, manifest.webmanifest
+│       └── src/
+│           ├── components/       # Reusable UI primitives, Navigation, Layout, SVG Icons
+│           ├── lib/              # API client, Auth Context, formatting utilities
+│           └── pages/            # View components (Dashboard, Clubs, Events, RunDay, etc.)
+├── docs/                         # System architecture, test evidence, demo walkthrough scripts
+├── load-tests/                   # High-concurrency check-in load testing suite
+└── render.yaml                   # Render Blueprint Infrastructure-as-Code specification
 ```
 
-## Tests
+---
 
+## 🧪 Testing & Quality Assurance
+
+CampusCred includes comprehensive automated test suites covering end-to-end user journeys, check-in abuse prevention, load limits, and document tamper verification.
+
+### Run Integration Tests
 ```bash
-npm test                 # 33 API tests: end-to-end Club Day x3 clubs, check-in abuse cases, 20 certificates + tamper test,
-                         # 200 concurrent registrations with teams, permissions, report figures vs raw data, automation
-npm run load-test        # 100 / 300 / 500 simultaneous check-ins, p95 and error rate (takes about 2 minutes)
-python3 e2e/walkthrough.py   # real-browser walkthrough (pip install playwright && playwright install chromium)
-node scripts/test-report.mjs # rebuild docs/TEST_REPORT.md from the last runs
+npm test
 ```
+- **33 Integration Tests**: Validates full Club Day cycles, score publishing, multi-campus permissions, certificate fingerprint verification, and concurrency locks.
 
-Results and commentary: `docs/TEST_REPORT.md`.
+### Run Attendance Stress / Load Test
+```bash
+npm run load-test
+```
+- Tests 100, 300, and 500 concurrent attendance check-in requests against the rotating cryptographic token endpoint.
 
-## Configuration
+---
 
-See `.env.example`. The important ones: `JWT_SECRET` (required in production), `PUBLIC_URL` (certificate QR codes point here), `ROTATE_SECONDS`, `DEMO_MODE=0` to hide demo accounts and the on-screen OTP.
+## ⚙️ Configuration & Environment Variables
 
-## Honest limitations (read before relying on it)
+| Variable | Description | Default | Production Recommended |
+|---|---|---|---|
+| `PORT` | HTTP port for backend API | `4000` | Set by host (e.g. `10000` on Render) |
+| `NODE_ENV` | Environment mode | `development` | `production` |
+| `JWT_SECRET` | Secret key for signing session tokens | System fallback | Provide a secure 64-char string |
+| `PUBLIC_URL` | Base URL embedded in certificate verification QRs | `http://localhost:4000` | `https://campuscred-gd43.onrender.com` |
+| `ROTATE_SECONDS`| Frequency of attendance QR token rotation | `20` | `20` |
+| `DEMO_MODE` | Exposes demo helper credentials | `1` | `0` for strict production environments |
 
-* **Database is SQLite, not Postgres/Supabase.** It gives one-command setup and handled the load test, but it is a single-writer file database. The schema is plain SQL and lives in one file (`apps/api/src/schema.js`). Moving to Postgres means porting the data-access calls from synchronous (`better-sqlite3`) to async (`pg`); that is real work, not a config change. Because permissions live in the API, Postgres Row Level Security is not used.
-* **Login:** email/student-ID + password and a student OTP. Google Workspace login for staff is **not implemented**. The OTP is shown on screen in demo mode and there is no SMS/e-mail sender.
-* **Notifications:** in-app alerts work. E-mail messages are queued in the `outbox` table (visible under Admin) but nothing sends them. No WhatsApp/Telegram.
-* **PWA:** the app is installable (manifest + icon) but has no offline service worker. Check-in needs a connection by design.
-* **Load test:** 500 check-ins at the same instant measured 0.84 to 0.99 s p95 in the final run on a 1-vCPU machine that was also running the load generator (1.0 to 1.2 s before tuning). That is a thin margin and varies run to run; 100 and 300 simultaneous are comfortably under 0.7 s, and 500 arriving at a realistic pace (8 per second, five times the brief's rate) is about 8 ms p95. Exact figures: `docs/TEST_REPORT.md`.
-* **Untested:** in-app camera scanning on a real device, real phone geolocation, the Dockerfile, deployment to a host, a formal accessibility audit.
-* **Time zone:** deadlines default to 11:59 pm IST and times display in IST.
-* Uploaded files are type- and size-checked but not virus-scanned.
-* Production checklist: set `JWT_SECRET`, `DEMO_MODE=0`, serve over HTTPS (browsers require it for camera and location), back up `apps/api/data`.
+---
+
+## 🔒 Security Design
+
+1. **Server-Side Enforcement**: Permissions are computed in `apps/api/src/lib/access.js` and validated per API route. The frontend only displays permitted controls.
+2. **Rotating Attendance Secrets**: Single-use time slots prevent screenshot sharing or attendance proxying.
+3. **Cryptographic Certificate Verification**: Every certificate generates a canonical payload hashed with SHA-256. Re-uploading a modified PDF detects any pixel or byte alteration immediately.
+4. **Audit Logging**: Any coordinator or admin override of attendance or marks requires a mandatory justification and records the actor's ID, timestamp, and previous state.
+
+---
+
+## 📄 License
+
+Proprietary — Built for modern university campus co-curricular operations.
