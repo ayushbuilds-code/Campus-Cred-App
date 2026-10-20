@@ -85,18 +85,16 @@ npm run seed -- --reset
 
 ## 🔑 Demo Credentials
 
-All seeded demo accounts use the standard password: `Demo@123`
+All seeded demo accounts use the standard password: `@Demo123`
 
 | Role | Account Email / ID | Campus / Affiliation | What to Explore |
 |---|---|---|---|
-| **Super Admin** | `superadmin@campus.edu` | Global (All Campuses) | Global overview, campus management, audit logs, system-wide rules |
-| **Campus Admin (Bengaluru)** | `admin.bengaluru@msot.example` | Mirai School of Tech | Club approvals, duty leave, campus reports, calendar imports |
-| **Campus Admin (Mumbai)** | `admin.mumbai@apex.example` | Apex University | Mumbai campus oversight and event approvals |
-| **Faculty Advisor** | `advisor.coding@msot.example` | Coding Club (BLR) | Review activity plans, rubric score submissions, approve budgets |
-| **Club President** | `pres.coding@msot.example` | Coding Club (BLR) | Launch dynamic rotating QR check-in, score members, publish grades |
-| **Club Treasurer** | `treasurer.coding@msot.example` | Coding Club (BLR) | Submit budget requests and track expenses |
-| **Active Member** | `student.blr@msot.example` / `MSOT26003` | Coding Club (BLR) | Mobile QR scan / 6-digit check-in, submit project link, download certificates |
-| **Independent Student** | `MSOT26045` | Student (No Club) | Browse clubs, submit join request within quota limits |
+| **Super Admin** | `superadmin@msot.com` | Global (All Campuses) | Global overview, campus management, audit logs, system-wide rules |
+| **Campus Admin (Bengaluru)** | `campus.admin@msot.com` | Mirai School of Tech | Club approvals, duty leave, campus reports, calendar imports |
+| **Faculty Advisor** | `aditya@msot.com` | Sport Club (BLR) | Review activity plans, rubric score submissions, approve budgets |
+| **Sport Club President** | `astitva@msot.com` | Sport Club (BLR) | Launch dynamic rotating QR check-in, score members, publish grades |
+| **Sport Club Treasurer** | `aryan@msot.com` | Sport Club (BLR) | Submit budget requests and track expenses |
+| **Active Member** | `ayush@msot.com` / `MSOT26003` | Sport Club (BLR) | Mobile QR scan / 6-digit check-in, submit project link, download certificates |
 
 ---
 
