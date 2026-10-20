@@ -248,7 +248,7 @@ export default function Layout() {
               className="hidden sm:inline-flex items-center gap-1.5 rounded-lg border border-line bg-white px-2.5 py-1.5 text-xs font-semibold text-ink hover:border-brand hover:text-brand transition-colors shadow-xs"
             >
               <Icon name="users" size={14} />
-              <span>Demo Roles</span>
+              <span>Switch Role</span>
             </button>
             {bell}
           </div>
@@ -334,11 +334,11 @@ export default function Layout() {
         </div>
       )}
 
-      {/* Role Switcher Modal (Instant Testing) */}
+      {/* Role Switcher Modal */}
       {showDemoModal && (
-        <Modal title="Instant Role Switcher (Test Access Control)" onClose={() => setShowDemoModal(false)}>
+        <Modal title="Role Switcher (Institutional Access Control)" onClose={() => setShowDemoModal(false)}>
           <p className="text-xs text-ink-60 mb-3">
-            Click any account to instantly authenticate and evaluate the isolated dashboard experience:
+            Select any registered account to view their dashboard experience and permissions:
           </p>
           <div className="max-h-[65vh] overflow-y-auto space-y-2 pr-1">
             {demoAccounts.data?.accounts ? (
@@ -380,7 +380,7 @@ export default function Layout() {
                 );
               })
             ) : (
-              <p className="text-sm text-ink-60">Loading demo accounts...</p>
+              <p className="text-sm text-ink-60">Loading available accounts...</p>
             )}
           </div>
           <div className="mt-4 flex justify-end">

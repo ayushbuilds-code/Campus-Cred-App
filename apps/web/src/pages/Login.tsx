@@ -1,9 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { api, useApi } from '../lib/api';
+import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
-import { Badge, Button, Field, Stamp, useAction, useToast } from '../components/ui';
-import { POSITION, ROLE } from '../lib/format';
+import { Button, Field, Stamp, useAction, useToast } from '../components/ui';
 
 export default function Login() {
   const { me, login } = useAuth();
@@ -12,11 +11,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [activeTab, setActiveTab] = useState<'all' | 'admin' | 'advisor' | 'treasurer' | 'student'>('all');
-
   const { run, busy } = useAction();
   const toast = useToast();
-  const demo = useApi<any>('/public/demo-accounts');
 
   if (me) return <Navigate to="/" replace />;
 
@@ -29,28 +25,13 @@ export default function Login() {
       const r = await run(() => api('/auth/otp/request', { body: { student_code: identifier }, auth: false }));
       if (r) {
         setOtpSent(true);
-        toast.ok(r.devOtp ? `Demo code: ${r.devOtp}` : 'Code sent.');
+        toast.ok(r.devOtp ? `Verification code: ${r.devOtp}` : 'Code sent.');
         if (r.devOtp) setOtp(r.devOtp);
       }
     } else {
       const r = await run(() => api('/auth/otp/verify', { body: { student_code: identifier, otp }, auth: false }));
       if (r) await login(r.token);
     }
-  };
-
-  const quick = async (a: any) => {
-    const r = await run(() => api('/auth/login', { body: { identifier: a.email, password: demo.data.password || 'Demo@123' }, auth: false }));
-    if (r) await login(r.token);
-  };
-
-  const accounts: any[] = demo.data?.accounts || [];
-
-  const filterAccounts = (accs: any[]) => {
-    if (activeTab === 'admin') return accs.filter((a) => a.system_role === 'super_admin' || a.system_role === 'campus_admin' || a.system_role === 'admin' || a.system_role === 'campus_manager');
-    if (activeTab === 'advisor') return accs.filter((a) => a.system_role === 'faculty_advisor' || a.system_role === 'advisor');
-    if (activeTab === 'treasurer') return accs.filter((a) => a.position === 'treasurer');
-    if (activeTab === 'student') return accs.filter((a) => a.system_role === 'student' && a.position !== 'treasurer');
-    return accs;
   };
 
   return (
@@ -94,7 +75,7 @@ export default function Login() {
       <section className="p-6 md:flex md:flex-col md:justify-center md:p-12 overflow-y-auto">
         <div className="mx-auto w-full max-w-md">
           <h2 className="font-display text-2xl font-bold text-ink">Sign in to your dashboard</h2>
-          <p className="text-xs text-ink-60 mt-1">Authenticate with your campus credentials or tap any demo role below.</p>
+          <p className="text-xs text-ink-60 mt-1">Authenticate with your campus credentials or select your designated role below.</p>
 
           <div className="mt-4 inline-flex rounded-lg border border-line bg-white p-1 text-xs font-semibold">
             {(['password', 'otp'] as const).map((m) => (
@@ -150,63 +131,6 @@ export default function Login() {
               {mode === 'otp' && !otpSent ? 'Send Verification Code' : 'Sign in'}
             </Button>
           </form>
-
-          {/* Quick Demo Switcher */}
-          {accounts.length > 0 && (
-            <div className="mt-8 border-t border-line pt-6">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-display text-sm font-bold text-ink">Demo Accounts (Instant Testing)</h3>
-                <span className="text-[11px] text-ink-60 font-mono">Password: Demo@123</span>
-              </div>
-              <p className="text-xs text-ink-60 mb-3">
-                Tap any role to immediately test role-based access control and campus isolation:
-              </p>
-
-              {/* Role Filter Tabs */}
-              <div className="flex flex-wrap gap-1 mb-2.5">
-                {[
-                  { id: 'all', label: 'All' },
-                  { id: 'admin', label: 'Admins' },
-                  { id: 'advisor', label: 'Advisors' },
-                  { id: 'treasurer', label: 'Treasurers' },
-                  { id: 'student', label: 'Students' },
-                ].map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => setActiveTab(t.id as any)}
-                    className={`rounded-md px-2 py-1 text-[11px] font-semibold transition-colors ${activeTab === t.id ? 'bg-brand text-white' : 'bg-paper-sunken text-ink-60 hover:text-ink'}`}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid max-h-72 gap-1.5 overflow-y-auto pr-1">
-                {filterAccounts(accounts).map((a) => {
-                  let roleTone: 'brand' | 'warn' | 'ok' | 'neutral' = 'neutral';
-                  if (a.system_role === 'super_admin' || a.system_role === 'admin') roleTone = 'brand';
-                  else if (a.system_role === 'campus_admin' || a.system_role === 'campus_manager') roleTone = 'ok';
-                  else if (a.system_role === 'faculty_advisor' || a.system_role === 'advisor') roleTone = 'warn';
-
-                  return (
-                    <button
-                      key={a.email}
-                      onClick={() => quick(a)}
-                      className="flex items-center justify-between rounded-xl border border-line bg-white p-2.5 text-left text-xs hover:border-brand hover:shadow-xs transition-all"
-                    >
-                      <div className="min-w-0 pr-2">
-                        <span className="font-semibold text-ink block truncate">{a.name}</span>
-                        <span className="block truncate text-[11px] text-ink-60">
-                          {a.campus_name || 'All Campuses'} {a.club ? `· ${a.club} (${a.position || 'member'})` : ''}
-                        </span>
-                      </div>
-                      <Badge tone={roleTone}>{ROLE[a.system_role] || a.system_role}</Badge>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           <p className="mt-8 text-xs text-ink-60 text-center">
             Verifying credential authenticity?{' '}
