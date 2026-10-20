@@ -12,19 +12,38 @@ export default function eventRoutes(ctx) {
   const r = Router();
   const { db, access: acc } = ctx;
   const A = ctx.auth;
-  const isManager = (u, ev) => u.system_role === 'admin' || (u.system_role === 'campus_manager' && (ev.campus_id == null || ev.campus_id === u.campus_id));
+  const isSuper = (u) => u.system_role === 'super_admin' || u.system_role === 'admin';
+  const isCampus = (u, ev) => (u.system_role === 'campus_admin' || u.system_role === 'campus_manager') && (ev ? (ev.campus_id == null || ev.campus_id === u.campus_id) : true);
+  const isManager = (u, ev) => isSuper(u) || isCampus(u, ev) || (ev?.club_id ? !!db.prepare("SELECT 1 FROM memberships WHERE user_id=? AND club_id=? AND status='active' AND position IN ('president','vice_president')").get(u.id, ev.club_id) : false);
   const loadEvent = (id) => { const e = db.prepare('SELECT * FROM events WHERE id=?').get(id); if (!e) throw notFound('Event not found'); return e; };
-  const visibleTo = (u, ev) => u.system_role === 'admin' || ev.campus_id == null || ev.campus_id === u.campus_id;
+  const visibleTo = (u, ev) => isSuper(u) || ev.campus_id == null || ev.campus_id === u.campus_id;
   const regCount = (id) => db.prepare('SELECT COUNT(*) n FROM event_regs WHERE event_id=?').get(id).n;
   const teamSize = (id) => db.prepare('SELECT COUNT(*) n FROM event_regs WHERE team_id=?').get(id).n;
 
   r.get('/events', A, (req, res) => {
     const u = req.user;
-    const rows = db.prepare(`SELECT e.*, (SELECT COUNT(*) FROM event_regs r WHERE r.event_id=e.id) registered,
+    const filterCampusId = req.query.campus_id ? Number(req.query.campus_id) : null;
+    let sql = `SELECT e.*,
+      (SELECT name FROM campuses ca WHERE ca.id=e.campus_id) campus_name,
+      (SELECT name FROM clubs cl WHERE cl.id=e.club_id) club_name,
+      (SELECT COUNT(*) FROM event_regs r WHERE r.event_id=e.id) registered,
       (SELECT COUNT(*) FROM teams t WHERE t.event_id=e.id) teams,
       (SELECT team_id FROM event_regs r WHERE r.event_id=e.id AND r.user_id=?) my_team_id,
       EXISTS (SELECT 1 FROM event_regs r WHERE r.event_id=e.id AND r.user_id=?) registered_me
-      FROM events e WHERE e.is_test=0 AND (e.campus_id IS NULL OR e.campus_id=? OR ?=1) ORDER BY e.starts_at DESC`).all(u.id, u.id, u.campus_id, u.system_role === 'admin' ? 1 : 0);
+      FROM events e WHERE e.is_test=0`;
+    const params = [u.id, u.id];
+
+    if (isSuper(u)) {
+      if (filterCampusId) {
+        sql += ` AND (e.campus_id IS NULL OR e.campus_id=?)`;
+        params.push(filterCampusId);
+      }
+    } else {
+      sql += ` AND (e.campus_id IS NULL OR e.campus_id=?)`;
+      params.push(u.campus_id);
+    }
+    sql += ` ORDER BY e.starts_at DESC`;
+    const rows = db.prepare(sql).all(...params);
     res.json({ items: rows });
   });
 
@@ -33,21 +52,30 @@ export default function eventRoutes(ctx) {
     starts_at: z.string().min(8), ends_at: z.string().optional(), registration_deadline: z.string().optional(),
     capacity: z.number().int().min(1).max(5000).default(200), team_size_min: z.number().int().min(1).max(20).default(1), team_size_max: z.number().int().min(1).max(20).default(1),
     inter_college: z.boolean().default(false), inter_campus: z.boolean().default(false),
+    campus_id: z.number().int().nullable().optional(),
+    club_id: z.number().int().nullable().optional(),
   }).refine((v) => v.team_size_max >= v.team_size_min, { message: 'Maximum team size must be at least the minimum' });
   const dt = (s, label) => { const d = new Date(s); if (Number.isNaN(d.getTime())) throw bad(`${label} is not a valid date.`); return d.toISOString(); };
 
   r.post('/events', A, (req, res) => {
     acc.require(acc.canCreateEvent(req.user), 'Only admins, campus managers, or club coordinators can organize events.');
     const b = parse(eventBody, req.body);
-    const allowInterCampus = req.user.system_role === 'admin' || req.user.system_role === 'campus_manager';
-    const campusId = (allowInterCampus && b.inter_campus) ? null : req.user.campus_id;
-    const info = db.prepare(`INSERT INTO events(campus_id,name,kind,description,venue,starts_at,ends_at,registration_deadline,capacity,team_size_min,team_size_max,inter_college,status,created_by,created_at)
-      VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 'open', ?,?)`).run(campusId, b.name, b.kind ?? null, b.description ?? null, b.venue ?? null,
+    let campusId = null;
+    if (isSuper(req.user)) {
+      campusId = b.inter_campus ? null : (b.campus_id !== undefined ? b.campus_id : null);
+    } else if (isCampus(req.user)) {
+      campusId = b.inter_campus ? null : req.user.campus_id;
+    } else {
+      campusId = req.user.campus_id;
+    }
+
+    const info = db.prepare(`INSERT INTO events(campus_id,club_id,name,kind,description,venue,starts_at,ends_at,registration_deadline,capacity,team_size_min,team_size_max,inter_college,status,created_by,created_at)
+      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?, 'open', ?,?)`).run(campusId, b.club_id ?? null, b.name, b.kind ?? null, b.description ?? null, b.venue ?? null,
       dt(b.starts_at, 'starts_at'), b.ends_at ? dt(b.ends_at, 'ends_at') : null, b.registration_deadline ? dt(b.registration_deadline, 'registration_deadline') : dt(b.starts_at, 'starts_at'),
       b.capacity, b.team_size_min, b.team_size_max, b.inter_college ? 1 : 0, req.user.id, iso(ctx.now()));
-    ctx.audit(req.user.id, 'event.create', 'event', info.lastInsertRowid, { neu: { name: b.name } });
+    ctx.audit(req.user.id, 'event.create', 'event', info.lastInsertRowid, { neu: { name: b.name, campus_id: campusId } });
     const base = "SELECT id FROM users WHERE system_role='student' AND is_test=0";
-    const students = (campusId == null ? db.prepare(base).all() : db.prepare(`${base} AND campus_id=?`).all(req.user.campus_id)).map((x) => x.id);
+    const students = (campusId == null ? db.prepare(base).all() : db.prepare(`${base} AND campus_id=?`).all(campusId)).map((x) => x.id);
     ctx.notify(students, `New event: ${b.name}`, `${b.venue || ''} Registration is open.`, `/events/${info.lastInsertRowid}`, { email: false });
     res.status(201).json({ id: info.lastInsertRowid });
   });
@@ -200,14 +228,14 @@ export default function eventRoutes(ctx) {
     const u = req.user;
     const base = `SELECT d.*, e.name event_name, e.starts_at, u.name student, u.student_code FROM duty_leaves d JOIN events e ON e.id=d.event_id JOIN users u ON u.id=d.user_id`;
     const rows = u.system_role === 'student' ? db.prepare(`${base} WHERE d.user_id=? ORDER BY d.id DESC`).all(u.id)
-      : u.system_role === 'admin' ? db.prepare(`${base} ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all()
-        : u.system_role === 'campus_manager' ? db.prepare(`${base} WHERE u.campus_id=? ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all(u.campus_id) : [];
+      : isSuper(u) ? db.prepare(`${base} ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all()
+        : isCampus(u) ? db.prepare(`${base} WHERE u.campus_id=? ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all(u.campus_id) : [];
     res.json({ items: rows });
   });
-  r.post('/duty-leaves/:id/decision', A, ctx.roles('admin', 'campus_manager'), (req, res) => {
+  r.post('/duty-leaves/:id/decision', A, ctx.roles('super_admin', 'admin', 'campus_admin', 'campus_manager'), (req, res) => {
     const d = db.prepare('SELECT d.*, u.campus_id FROM duty_leaves d JOIN users u ON u.id=d.user_id WHERE d.id=?').get(req.params.id);
     if (!d) throw notFound();
-    if (req.user.system_role === 'campus_manager' && d.campus_id !== req.user.campus_id) throw forbidden();
+    if (isCampus(req.user) && !isSuper(req.user) && d.campus_id !== req.user.campus_id) throw forbidden();
     const b = parse(z.object({ approve: z.boolean(), note: z.string().max(300).optional() }), req.body);
     if (d.status !== 'pending') throw conflict('This request was already decided.');
     db.prepare('UPDATE duty_leaves SET status=?, decided_by=?, decision_note=?, decided_at=? WHERE id=?').run(b.approve ? 'approved' : 'rejected', req.user.id, b.note ?? null, iso(ctx.now()), d.id);

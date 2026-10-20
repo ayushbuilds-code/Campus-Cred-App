@@ -9,12 +9,16 @@ export default function insightRoutes(ctx) {
   const A = ctx.auth;
   const monthRe = /^\d{4}-(0[1-9]|1[0-2])$/;
 
+  const isSuper = (u) => u.system_role === 'super_admin' || u.system_role === 'admin';
+  const isCampus = (u) => u.system_role === 'campus_admin' || u.system_role === 'campus_manager';
+  const isAdv = (u) => u.system_role === 'faculty_advisor' || u.system_role === 'advisor';
+
   const scope = (u, campusParam) => {
-    const clubIds = acc.visibleClubIds(u);
-    const wide = u.system_role === 'admin' || u.system_role === 'campus_manager';
+    const clubIds = acc.visibleClubIds(u, campusParam);
+    const wide = isSuper(u) || isCampus(u);
     // Only throw for students/coordinators with no clubs — advisors and wide roles always get a dashboard
-    if (!wide && u.system_role !== 'advisor' && !clubIds.length) throw forbidden('Dashboards are for coordinators, advisors, campus managers and admins.');
-    const campusId = u.system_role === 'campus_manager' ? u.campus_id : campusParam ? Number(campusParam) : null;
+    if (!wide && !isAdv(u) && !clubIds.length) throw forbidden('Dashboards are for coordinators, advisors, campus managers and admins.');
+    const campusId = isCampus(u) ? u.campus_id : campusParam ? Number(campusParam) : null;
     const ids = campusId ? clubIds.filter((id) => { const row = db.prepare('SELECT campus_id FROM clubs WHERE id=?').get(id); return row && row.campus_id === campusId; }) : clubIds;
     return { ids, wide, campusId };
   };

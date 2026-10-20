@@ -13,11 +13,11 @@ export default function certRoutes(ctx) {
 
   const canSeeStudent = (u, studentId) => {
     if (u.id === studentId) return true;
-    if (u.system_role === 'admin') return true;
+    if (u.system_role === 'super_admin' || u.system_role === 'admin') return true;
     const s = db.prepare('SELECT campus_id FROM users WHERE id=?').get(studentId);
     if (!s) throw notFound('Student not found');
-    if (u.system_role === 'campus_manager') return s.campus_id === u.campus_id;
-    if (u.system_role === 'advisor') return !!db.prepare(`SELECT 1 FROM memberships m JOIN clubs c ON c.id=m.club_id WHERE m.user_id=? AND c.advisor_id=? AND m.status='active'`).get(studentId, u.id);
+    if (u.system_role === 'campus_admin' || u.system_role === 'campus_manager') return s.campus_id === u.campus_id;
+    if (u.system_role === 'faculty_advisor' || u.system_role === 'advisor') return !!db.prepare(`SELECT 1 FROM memberships m JOIN clubs c ON c.id=m.club_id WHERE m.user_id=? AND (c.advisor_id=? OR EXISTS (SELECT 1 FROM faculty_advisor_assignments fa WHERE fa.club_id=c.id AND fa.user_id=?)) AND m.status='active'`).get(studentId, u.id, u.id);
     return false;
   };
 
