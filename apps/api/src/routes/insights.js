@@ -53,8 +53,10 @@ export default function insightRoutes(ctx) {
     res.type('text/csv').attachment(`club-report-${month}.csv`).send(toCsv(rows, ['club', 'month', 'club_days_held', 'members', 'check_ins', 'attendance_pct', 'submissions', 'submission_rate_pct', 'avg_score']));
   });
 
-  r.get('/insights/participation.csv', A, ctx.roles('admin', 'campus_manager'), (req, res) => {
-    const campus = req.user.system_role === 'campus_manager' ? req.user.campus_id : null;
+  r.get('/insights/participation.csv', A, ctx.roles('super_admin', 'admin', 'campus_admin', 'campus_manager'), (req, res) => {
+    const campus = req.user.system_role === 'campus_manager' || req.user.system_role === 'campus_admin'
+      ? req.user.campus_id
+      : (req.query.campus_id ? Number(req.query.campus_id) : null);
     const rows = db.prepare(`SELECT u.student_code, u.name,
       (SELECT group_concat(c.name || ' (' || m.position || ')', '; ') FROM memberships m JOIN clubs c ON c.id=m.club_id WHERE m.user_id=u.id AND m.status='active') clubs,
       (SELECT COUNT(*) FROM attendance a WHERE a.user_id=u.id AND a.status IN ('present','late')) sessions_attended,

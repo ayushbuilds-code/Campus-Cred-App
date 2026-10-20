@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api, useApi } from '../lib/api';
 import { useAuth } from '../lib/auth';
@@ -276,24 +276,29 @@ function AssignAdminModal({ campus, onClose, onDone }: { campus: any; onClose: (
 // 2. USERS (STRICT CAMPUS ISOLATION)
 // =========================================================================
 function Users() {
-  const { isSuperAdmin, isCampusAdmin, me } = useAuth();
+  const { isSuperAdmin, isCampusAdmin, me, selectedCampusId } = useAuth();
   const campuses = useApi<any>('/campuses');
 
   const [q, setQ] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
-  const [campusFilter, setCampusFilter] = useState('');
+  const [campusFilter, setCampusFilter] = useState(() => (selectedCampusId ? String(selectedCampusId) : ''));
+
+  useEffect(() => {
+    setCampusFilter(selectedCampusId ? String(selectedCampusId) : '');
+  }, [selectedCampusId]);
 
   let queryUrl = `/users?q=${encodeURIComponent(q)}&role=${encodeURIComponent(roleFilter)}`;
-  if (isSuperAdmin && campusFilter) queryUrl += `&campus_id=${campusFilter}`;
+  const effectiveCampusId = isSuperAdmin ? (campusFilter || (selectedCampusId ? String(selectedCampusId) : '')) : '';
+  if (effectiveCampusId) queryUrl += `&campus_id=${effectiveCampusId}`;
 
-  const { data, loading, error, reload } = useApi<any>(queryUrl);
+  const { data, loading, error, reload } = useApi<any>(queryUrl, [effectiveCampusId, selectedCampusId]);
   const [f, setF] = useState<any>({
     name: '',
     email: '',
     student_code: '',
     system_role: 'student',
     password: '',
-    campus_id: '',
+    campus_id: selectedCampusId ? String(selectedCampusId) : '',
   });
   const [editingUser, setEditingUser] = useState<any>(null);
   const { run, busy } = useAction();
@@ -513,7 +518,9 @@ function EditUserModal({ user, isSuperAdmin, campuses, onClose, onDone }: any) {
 // 3. CLUBS MANAGEMENT
 // =========================================================================
 function AdminClubs() {
-  const { data, loading, error, reload } = useApi<any>('/clubs');
+  const { isSuperAdmin, selectedCampusId } = useAuth();
+  const queryUrl = isSuperAdmin && selectedCampusId ? `/clubs?campus_id=${selectedCampusId}` : '/clubs';
+  const { data, loading, error, reload } = useApi<any>(queryUrl, [selectedCampusId]);
   const { run } = useAction();
 
   const toggleStatus = async (c: any, status: string) => {
@@ -609,7 +616,9 @@ function Settings() {
 // 5. AUDIT LOG
 // =========================================================================
 function Audit() {
-  const { data, loading, error } = useApi<any>('/audit');
+  const { isSuperAdmin, selectedCampusId } = useAuth();
+  const queryUrl = isSuperAdmin && selectedCampusId ? `/audit?campus_id=${selectedCampusId}` : '/audit';
+  const { data, loading, error } = useApi<any>(queryUrl, [selectedCampusId]);
   if (loading && !data) return <Loading />;
   if (error) return <ErrorBox error={error} />;
 

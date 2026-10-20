@@ -69,6 +69,14 @@ export function createApp({ cfg, db, now }) {
 
   const api = express.Router();
   api.use(limited({ windowMs: 60 * 1000, limit: 900, skip: (req) => req.path.startsWith('/checkin') }));
+  api.use((req, res, next) => {
+    const campusHdr = req.headers['x-campus-id'];
+    if (campusHdr && !req.query.campus_id) {
+      const q = { ...req.query, campus_id: campusHdr };
+      Object.defineProperty(req, 'query', { value: q, writable: true, configurable: true });
+    }
+    next();
+  });
   for (const mod of [dayRoutes, authRoutes, miscRoutes, clubRoutes, workRoutes, eventRoutes, certRoutes, insightRoutes]) api.use(mod(ctx));
   api.get('/health', (req, res) => res.json({ ok: true, time: new Date(ctx.now()).toISOString() }));
   app.use('/api/v1', api);

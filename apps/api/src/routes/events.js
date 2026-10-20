@@ -226,9 +226,13 @@ export default function eventRoutes(ctx) {
   // ---------- Duty leave (stretch) ----------
   r.get('/duty-leaves', A, (req, res) => {
     const u = req.user;
+    const filterCampusId = req.query.campus_id ? Number(req.query.campus_id) : null;
     const base = `SELECT d.*, e.name event_name, e.starts_at, u.name student, u.student_code FROM duty_leaves d JOIN events e ON e.id=d.event_id JOIN users u ON u.id=d.user_id`;
     const rows = u.system_role === 'student' ? db.prepare(`${base} WHERE d.user_id=? ORDER BY d.id DESC`).all(u.id)
-      : isSuper(u) ? db.prepare(`${base} ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all()
+      : isSuper(u)
+        ? (filterCampusId
+            ? db.prepare(`${base} WHERE u.campus_id=? ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all(filterCampusId)
+            : db.prepare(`${base} ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all())
         : isCampus(u) ? db.prepare(`${base} WHERE u.campus_id=? ORDER BY d.status='pending' DESC, d.id DESC LIMIT 200`).all(u.campus_id) : [];
     res.json({ items: rows });
   });

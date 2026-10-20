@@ -18,7 +18,7 @@ export default function Home() {
   } = useAuth();
 
   const overviewUrl = isSuperAdmin && selectedCampusId ? `/me/overview?campus_id=${selectedCampusId}` : '/me/overview';
-  const { data, loading, error, reload } = useApi<any>(overviewUrl);
+  const { data, loading, error, reload } = useApi<any>(overviewUrl, [selectedCampusId]);
   const campusesRes = useApi<any>('/campuses');
 
   const [showAddCampus, setShowAddCampus] = useState(false);

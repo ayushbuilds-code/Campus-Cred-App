@@ -41,7 +41,7 @@ export default function Budget() {
   } = useAuth();
 
   const queryUrl = isSuperAdmin && selectedCampusId ? `/budget?campus_id=${selectedCampusId}` : '/budget';
-  const { data, loading, error, reload } = useApi<any>(queryUrl);
+  const { data, loading, error, reload } = useApi<any>(queryUrl, [selectedCampusId]);
 
   // Filters & Search
   const [search, setSearch] = useState('');

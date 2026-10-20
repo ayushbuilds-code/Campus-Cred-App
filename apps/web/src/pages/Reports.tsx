@@ -6,20 +6,52 @@ import { Button, Card, CardTitle, Empty, ErrorBox, Loading, PageHeader, useActio
 import { fmtWeekday } from '../lib/format';
 
 export default function Reports() {
-  const { role } = useAuth();
+  const { role, isSuperAdmin, selectedCampusId, me } = useAuth();
   const [params, setParams] = useSearchParams();
   const month = params.get('month') || new Date().toISOString().slice(0, 7);
   const clubFilter = params.get('club');
-  const { data, loading, error, reload } = useApi<any>(`/reports/monthly?month=${month}`);
+  const campusParam = isSuperAdmin && selectedCampusId ? `&campus_id=${selectedCampusId}` : '';
+  const { data, loading, error, reload } = useApi<any>(`/reports/monthly?month=${month}${campusParam}`, [month, selectedCampusId]);
   const { run, busy } = useAction();
   const toast = useToast();
   const [csvBusy, setCsvBusy] = useState(false);
   const reports = (data?.reports || []).filter((r: any) => !clubFilter || String(r.club.id) === clubFilter);
-  const csv = async () => { setCsvBusy(true); try { await download(`/reports/monthly.csv?month=${month}`, `club-report-${month}.csv`); } catch (e: any) { toast.error(e.message); } finally { setCsvBusy(false); } };
+  const csv = async () => {
+    setCsvBusy(true);
+    try {
+      await download(
+        `/reports/monthly.csv?month=${month}${campusParam}`,
+        `club-report-${month}${selectedCampusId ? `-campus-${selectedCampusId}` : ''}.csv`
+      );
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setCsvBusy(false);
+    }
+  };
+
+  const selectedCampusName = isSuperAdmin
+    ? (selectedCampusId ? (me?.all_campuses?.find((c) => c.id === selectedCampusId)?.name || 'Selected Campus') : 'All Campuses (Consolidated)')
+    : (me?.campus?.name || 'Your Campus');
+
   return (
     <>
-      <PageHeader title="Monthly club reports" subtitle="Computed from the raw attendance, submission and score records. The campus manager also receives these automatically at month end."
-        actions={<><Button variant="secondary" loading={csvBusy} onClick={csv}>Download CSV</Button>{(role === 'admin' || role === 'campus_manager') && <Button loading={busy} onClick={() => run(() => api('/reports/monthly/generate', { body: { month } }), 'Reports generated and sent to campus managers')}>Generate and send</Button>}</>} />
+      <PageHeader
+        title="Monthly club reports"
+        subtitle={`Computed from raw attendance and score records for ${selectedCampusName}.`}
+        actions={
+          <>
+            <Button variant="secondary" loading={csvBusy} onClick={csv}>
+              Download CSV
+            </Button>
+            {(role === 'admin' || role === 'super_admin' || role === 'campus_manager' || role === 'campus_admin') && (
+              <Button loading={busy} onClick={() => run(() => api('/reports/monthly/generate', { body: { month } }), 'Reports generated and sent to campus managers')}>
+                Generate and send
+              </Button>
+            )}
+          </>
+        }
+      />
       <div className="mb-4 max-w-xs"><label className="mb-1 block text-sm font-semibold" htmlFor="month">Month</label><input id="month" className="input" type="month" value={month} onChange={(e) => setParams({ month: e.target.value })} /></div>
       {loading && !data ? <Loading /> : error ? <ErrorBox error={error} retry={reload} /> : reports.length === 0 ? <Empty title="No clubs to report on" /> : (
         <div className="space-y-4">{reports.map((r: any) => (

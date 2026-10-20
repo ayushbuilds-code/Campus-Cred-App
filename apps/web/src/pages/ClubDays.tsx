@@ -10,7 +10,7 @@ export default function ClubDays() {
   const { me, isSuperAdmin, isCampusAdmin, isAdvisor, isLead, selectedCampusId } = useAuth();
   const nav = useNavigate();
   const queryUrl = isSuperAdmin && selectedCampusId ? `/club-days?campus_id=${selectedCampusId}` : '/club-days';
-  const { data, loading, error, reload } = useApi<any>(queryUrl);
+  const { data, loading, error, reload } = useApi<any>(queryUrl, [selectedCampusId]);
   const [planFor, setPlanFor] = useState<any>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [showImport, setShowImport] = useState(false);

@@ -488,12 +488,20 @@ export default function miscRoutes(ctx) {
   // ---- Activity leaves ----
   r.get('/activity-leaves', A, (req, res) => {
     const u = req.user;
+    const filterCampusId = req.query.campus_id ? Number(req.query.campus_id) : null;
     const leadClubs = memberships(u.id).filter((m) => m.status === 'active' && (m.position === 'president' || m.position === 'vice_president')).map((m) => m.club_id);
     let rows;
     if (acc.isSuperAdmin(u)) {
-      rows = db.prepare(`SELECT l.*, c.name club_name, cd.date club_day_date, cd.title club_day_title, a.topic activity_topic, u.name student_name, u.student_code, dec.name decided_by_name
-        FROM activity_leaves l JOIN clubs c ON c.id=l.club_id LEFT JOIN club_days cd ON cd.id=l.club_day_id LEFT JOIN activities a ON a.id=l.activity_id
-        JOIN users u ON u.id=l.user_id LEFT JOIN users dec ON dec.id=l.decided_by ORDER BY l.id DESC LIMIT 200`).all();
+      if (filterCampusId) {
+        rows = db.prepare(`SELECT l.*, c.name club_name, cd.date club_day_date, cd.title club_day_title, a.topic activity_topic, u.name student_name, u.student_code, dec.name decided_by_name
+          FROM activity_leaves l JOIN clubs c ON c.id=l.club_id LEFT JOIN club_days cd ON cd.id=l.club_day_id LEFT JOIN activities a ON a.id=l.activity_id
+          JOIN users u ON u.id=l.user_id LEFT JOIN users dec ON dec.id=l.decided_by
+          WHERE c.campus_id=? ORDER BY l.id DESC LIMIT 200`).all(filterCampusId);
+      } else {
+        rows = db.prepare(`SELECT l.*, c.name club_name, cd.date club_day_date, cd.title club_day_title, a.topic activity_topic, u.name student_name, u.student_code, dec.name decided_by_name
+          FROM activity_leaves l JOIN clubs c ON c.id=l.club_id LEFT JOIN club_days cd ON cd.id=l.club_day_id LEFT JOIN activities a ON a.id=l.activity_id
+          JOIN users u ON u.id=l.user_id LEFT JOIN users dec ON dec.id=l.decided_by ORDER BY l.id DESC LIMIT 200`).all();
+      }
     } else if (u.system_role === 'campus_admin' || u.system_role === 'campus_manager') {
       rows = db.prepare(`SELECT l.*, c.name club_name, cd.date club_day_date, cd.title club_day_title, a.topic activity_topic, u.name student_name, u.student_code, dec.name decided_by_name
         FROM activity_leaves l JOIN clubs c ON c.id=l.club_id LEFT JOIN club_days cd ON cd.id=l.club_day_id LEFT JOIN activities a ON a.id=l.activity_id
@@ -551,10 +559,21 @@ export default function miscRoutes(ctx) {
   // ---- Settings & Audit ----
   r.get('/audit', A, ctx.roles('super_admin', 'admin', 'campus_admin', 'campus_manager'), (req, res) => {
     const limit = Math.min(Number(req.query.limit) || 100, 500);
+    const filterCampusId = acc.isSuperAdmin(req.user)
+      ? (req.query.campus_id ? Number(req.query.campus_id) : null)
+      : req.user.campus_id;
+    let sql = `SELECT l.*, u.name actor, u.email actor_email
+      FROM audit_log l LEFT JOIN users u ON u.id=l.actor_id
+      WHERE (?='' OR l.action LIKE ?)`;
+    const params = [req.query.q || '', `${req.query.q || ''}%`];
+    if (filterCampusId) {
+      sql += ' AND (u.campus_id=? OR u.campus_id IS NULL)';
+      params.push(filterCampusId);
+    }
+    sql += ' ORDER BY l.id DESC LIMIT ?';
+    params.push(limit);
     res.json({
-      items: db.prepare(`SELECT l.*, u.name actor, u.email actor_email
-        FROM audit_log l LEFT JOIN users u ON u.id=l.actor_id
-        WHERE (?='' OR l.action LIKE ?) ORDER BY l.id DESC LIMIT ?`).all(req.query.q || '', `${req.query.q || ''}%`, limit),
+      items: db.prepare(sql).all(...params),
     });
   });
 

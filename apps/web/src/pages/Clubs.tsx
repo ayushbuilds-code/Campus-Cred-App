@@ -20,7 +20,7 @@ import {
 export default function Clubs() {
   const { me, isSuperAdmin, isCampusAdmin, isAdvisor, isStudent, selectedCampusId, refresh } = useAuth();
   const queryUrl = isSuperAdmin && selectedCampusId ? `/clubs?campus_id=${selectedCampusId}` : '/clubs';
-  const { data, loading, error, reload } = useApi<any>(queryUrl);
+  const { data, loading, error, reload } = useApi<any>(queryUrl, [selectedCampusId]);
 
   const [q, setQ] = useState('');
   const [showNew, setShowNew] = useState(false);
@@ -195,9 +195,10 @@ export default function Clubs() {
 }
 
 function NewClubModal({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
-  const { isSuperAdmin, me } = useAuth();
+  const { isSuperAdmin, me, selectedCampusId } = useAuth();
   const campuses = useApi<any>('/campuses');
-  const advisors = useApi<any>('/users?role=advisor');
+  const advisorsUrl = `/users?role=advisor${selectedCampusId ? `&campus_id=${selectedCampusId}` : ''}`;
+  const advisors = useApi<any>(advisorsUrl, [selectedCampusId]);
 
   const [f, setF] = useState<any>({
     name: '',
@@ -206,7 +207,7 @@ function NewClubModal({ onClose, onDone }: { onClose: () => void; onDone: () => 
     meeting_rules: '',
     capacity: 25,
     advisor_id: '',
-    campus_id: me?.campus?.id || '',
+    campus_id: selectedCampusId ? String(selectedCampusId) : (me?.campus?.id || ''),
   });
 
   const { run, busy } = useAction();

@@ -8,7 +8,7 @@ import { fmtDateTime, fromLocalInput } from '../lib/format';
 export default function Events() {
   const { role, isLead, isSuperAdmin, isCampusAdmin, selectedCampusId } = useAuth();
   const eventsUrl = isSuperAdmin && selectedCampusId ? `/events?campus_id=${selectedCampusId}` : '/events';
-  const { data, loading, error, reload } = useApi<any>(eventsUrl);
+  const { data, loading, error, reload } = useApi<any>(eventsUrl, [selectedCampusId]);
   const [show, setShow] = useState(false);
 
   if (loading && !data) return <Loading />;
@@ -62,7 +62,7 @@ export default function Events() {
 }
 
 function NewEvent({ onClose, onDone }: { onClose: () => void; onDone: () => void }) {
-  const { isSuperAdmin, isCampusAdmin, me } = useAuth();
+  const { isSuperAdmin, isCampusAdmin, me, selectedCampusId } = useAuth();
   const campuses = useApi<any>('/campuses');
   const [f, setF] = useState<any>({
     name: '',
@@ -76,7 +76,7 @@ function NewEvent({ onClose, onDone }: { onClose: () => void; onDone: () => void
     team_size_max: 1,
     inter_college: false,
     inter_campus: false,
-    campus_id: isCampusAdmin ? String(me?.user.campus_id || '') : '',
+    campus_id: selectedCampusId ? String(selectedCampusId) : (isCampusAdmin ? String(me?.user.campus_id || '') : ''),
   });
 
   const { run, busy } = useAction();

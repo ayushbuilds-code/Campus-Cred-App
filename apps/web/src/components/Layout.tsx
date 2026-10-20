@@ -280,6 +280,30 @@ export default function Layout() {
                 ✕
               </button>
             </div>
+
+            {/* Mobile Campus Scope Switcher */}
+            {isSuperAdmin && allCampuses.length > 0 && (
+              <div className="mb-4 rounded-xl border border-line bg-paper p-3">
+                <div className="flex items-center justify-between text-xs text-ink-60 mb-1.5 font-medium">
+                  <span>Campus Scope:</span>
+                  <span className="text-[10px] bg-brand/10 text-brand px-1.5 py-0.5 rounded font-mono font-semibold">Super Admin</span>
+                </div>
+                <select
+                  aria-label="Select Campus Scope Mobile"
+                  value={selectedCampusId ?? ''}
+                  onChange={(e) => setSelectedCampusId(e.target.value ? Number(e.target.value) : null)}
+                  className="w-full rounded-lg bg-white border border-line text-xs text-ink px-2.5 py-2 focus:outline-none focus:ring-1 focus:ring-brand font-medium cursor-pointer"
+                >
+                  <option value="">All Campuses (Consolidated)</option>
+                  {allCampuses.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} ({c.city})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div className="grid grid-cols-3 gap-2.5">
               {rest.map((i) => (
                 <NavLink

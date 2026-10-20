@@ -51,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } else {
       localStorage.removeItem('cc_selected_campus');
     }
+    window.dispatchEvent(new CustomEvent('cc:campus_changed', { detail: id }));
   }, []);
 
   const refresh = useCallback(async () => {

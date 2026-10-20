@@ -6,18 +6,34 @@ import { Badge, Button, Card, CardTitle, Empty, ErrorBox, Loading, PageHeader, u
 import { fmtDate, fmtWeekday } from '../lib/format';
 
 export default function Dashboard() {
-  const { role } = useAuth();
-  const { data: d, loading, error, reload } = useApi<any>('/insights/overview');
+  const { role, isSuperAdmin, selectedCampusId, me } = useAuth();
+  const campusParam = isSuperAdmin && selectedCampusId ? `?campus_id=${selectedCampusId}` : '';
+  const { data: d, loading, error, reload } = useApi<any>(`/insights/overview${campusParam}`, [selectedCampusId]);
   const toast = useToast();
   if (loading && !d) return <Loading />;
   if (error) return <ErrorBox error={error} retry={reload} />;
   const wide = d.scope === 'campus';
   const canTranscript = role === 'admin' || role === 'campus_manager' || role === 'advisor';
   const tiles = [['Clubs', d.totals.clubs], [wide ? 'Students' : 'Members', d.totals.students], ['Active members', d.totals.active_members], ['Inactive clubs', d.totals.inactive_clubs], ['No participation', d.totals.zero_participation]];
-  const exportCsv = async () => { try { await download('/insights/participation.csv', 'participation-by-student.csv'); } catch (e: any) { toast.error(e.message); } };
+  const exportCsv = async () => {
+    try {
+      await download(`/insights/participation.csv${campusParam}`, `participation-by-student${selectedCampusId ? `-campus-${selectedCampusId}` : ''}.csv`);
+    } catch (e: any) {
+      toast.error(e.message);
+    }
+  };
+
+  const selectedCampusName = isSuperAdmin
+    ? (selectedCampusId ? (me?.all_campuses?.find((c) => c.id === selectedCampusId)?.name || 'Selected Campus') : 'All Campuses (Consolidated)')
+    : (me?.campus?.name || 'Your Campus');
+
   return (
     <>
-      <PageHeader title="Participation dashboard" subtitle={wide ? 'All clubs on your campus' : 'Your clubs'} actions={wide && role !== 'advisor' && <Button variant="secondary" onClick={exportCsv}>Export students (CSV)</Button>} />
+      <PageHeader
+        title="Participation dashboard"
+        subtitle={wide ? `Overview for ${selectedCampusName}` : 'Your clubs'}
+        actions={wide && role !== 'advisor' && <Button variant="secondary" onClick={exportCsv}>Export students (CSV)</Button>}
+      />
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">{tiles.map(([l, v]) => <Card key={l as string} className="!p-4"><p className="font-display text-3xl font-bold">{v}</p><p className="text-sm text-ink-60">{l}</p></Card>)}</div>
       <div className="grid gap-4 md:grid-cols-2">
         <Card><CardTitle>Attendance by club (%)</CardTitle>

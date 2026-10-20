@@ -5,22 +5,27 @@ import { Badge, Button, Card, CardTitle, Empty, ErrorBox, Field, Loading, Modal,
 import { fmtDate, fmtDateTime } from '../lib/format';
 
 export default function DutyLeave() {
-  const { me, role, isLead } = useAuth();
+  const { me, role, isLead, isSuperAdmin, selectedCampusId } = useAuth();
   const [tab, setTab] = useState<'activity' | 'event'>('activity');
   const [requestModal, setRequestModal] = useState(false);
 
-  const { data: actLeaves, loading: l1, error: e1, reload: r1 } = useApi<any>('/activity-leaves');
-  const { data: eventLeaves, loading: l2, error: e2, reload: r2 } = useApi<any>('/duty-leaves');
+  const campusParam = isSuperAdmin && selectedCampusId ? `?campus_id=${selectedCampusId}` : '';
+  const { data: actLeaves, loading: l1, error: e1, reload: r1 } = useApi<any>(`/activity-leaves${campusParam}`, [selectedCampusId]);
+  const { data: eventLeaves, loading: l2, error: e2, reload: r2 } = useApi<any>(`/duty-leaves${campusParam}`, [selectedCampusId]);
 
   if ((l1 && !actLeaves) || (l2 && !eventLeaves)) return <Loading />;
   if (e1) return <ErrorBox error={e1} retry={r1} />;
   if (e2) return <ErrorBox error={e2} retry={r2} />;
 
+  const selectedCampusName = isSuperAdmin
+    ? (selectedCampusId ? (me?.all_campuses?.find((c) => c.id === selectedCampusId)?.name || 'Selected Campus') : 'All Campuses (Consolidated)')
+    : (me?.campus?.name || 'Your Campus');
+
   return (
     <>
       <PageHeader
         title="Leave Management"
-        subtitle="Request and approve leaves for Club Activity Days and inter-college event participation."
+        subtitle={`Request and approve leaves for ${selectedCampusName}.`}
         actions={
           role === 'student' && (
             <Button onClick={() => setRequestModal(true)}>Request Club Day Leave</Button>
