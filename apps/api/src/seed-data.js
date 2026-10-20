@@ -39,7 +39,7 @@ export async function seedDemo(ctx, { rounds = 8 } = {}) {
   // =========================================================================
   // 2. SUPER ADMIN (Manages all campuses)
   // =========================================================================
-  const superAdmin = insUser.run(null, 'Dr. Rajeshwar Sen (Super Admin)', 'superadmin@campus.edu', null, hash, 'super_admin', t0).lastInsertRowid;
+  const superAdmin = insUser.run(null, 'Bittu Agarwal', 'superadmin@campus.edu', null, hash, 'super_admin', t0).lastInsertRowid;
   // Legacy admin alias for existing test compatibility
   const legacyAdmin = insUser.run(cBlr, 'Program Manager', 'admin@msot.example', null, hash, 'super_admin', t0).lastInsertRowid;
 
