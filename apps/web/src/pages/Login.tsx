@@ -100,7 +100,7 @@ export default function Login() {
                 autoComplete="username"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                placeholder={mode === 'password' ? 'superadmin@campus.edu or MSOT26001' : 'MSOT26001'}
+                placeholder={mode === 'password' ? 'superadmin@msot.com or MSOT26001' : 'MSOT26001'}
                 required
               />
             </Field>

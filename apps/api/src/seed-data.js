@@ -23,7 +23,7 @@ export async function seedDemo(ctx, { rounds = 8 } = {}) {
   const today = t0.slice(0, 10);
   const dow = new Date(`${today}T00:00:00Z`).getUTCDay();
   const sat0 = day(today, -((dow + 1) % 7));
-  const hash = bcrypt.hashSync('Demo@123', rounds);
+  const hash = bcrypt.hashSync('@Demo123', rounds);
 
   // =========================================================================
   // 1. CAMPUSES
@@ -39,7 +39,7 @@ export async function seedDemo(ctx, { rounds = 8 } = {}) {
   // =========================================================================
   // 2. SUPER ADMIN (Manages all campuses)
   // =========================================================================
-  const superAdmin = insUser.run(null, 'Bittu Agarwal', 'superadmin@campus.edu', null, hash, 'super_admin', t0).lastInsertRowid;
+  const superAdmin = insUser.run(null, 'Bittu Agarwal', 'superadmin@msot.com', null, hash, 'super_admin', t0).lastInsertRowid;
   // Legacy admin alias for existing test compatibility
   const legacyAdmin = insUser.run(cBlr, 'Program Manager', 'admin@msot.example', null, hash, 'super_admin', t0).lastInsertRowid;
 

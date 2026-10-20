@@ -19,4 +19,4 @@ const t = Date.now();
 const out = await seedDemo(makeCtx({ db, cfg }));
 const studentCount = db.prepare("SELECT COUNT(*) n FROM users WHERE system_role='student'").get().n;
 console.log(`Seeded ${out.campuses.length} campuses, ${out.clubs.length} clubs, ${studentCount} students in ${Date.now() - t} ms.`);
-console.log('Demo accounts ready (password: Demo@123): superadmin@campus.edu, admin.bengaluru@msot.example, admin.mumbai@apex.example, advisor.coding@msot.example, treasurer.coding@msot.example');
+console.log('Demo accounts ready (password: @Demo123): superadmin@msot.com, admin.bengaluru@msot.example, admin.mumbai@apex.example, advisor.coding@msot.example, treasurer.coding@msot.example');
