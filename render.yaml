@@ -15,7 +15,3 @@ services:
         generateValue: true
       - key: DEMO_MODE
         value: "1"
-    disk:
-      name: campuscred-data
-      mountPath: /app/apps/api/data
-      sizeGB: 1
