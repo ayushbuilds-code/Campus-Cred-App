@@ -261,11 +261,11 @@ export default function Layout() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav aria-label="Main" className="safe-bottom fixed inset-x-0 bottom-0 z-40 flex border-t border-line bg-white md:hidden shadow-lg">
+      <nav aria-label="Main" className="safe-bottom fixed inset-x-0 bottom-0 z-40 flex border-t border-line bg-white/95 backdrop-blur-md md:hidden shadow-lg">
         {bar.map((i) => link(i, true))}
         <button
           onClick={() => setMore(true)}
-          className="flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-semibold text-ink-60"
+          className="flex flex-1 flex-col items-center justify-center gap-0.5 py-2 text-[11px] font-semibold text-ink-60 hover:text-brand transition-colors"
         >
           <Icon name="more" size={22} />
           More
@@ -274,30 +274,60 @@ export default function Layout() {
 
       {/* Mobile More Drawer */}
       {more && (
-        <div className="fixed inset-0 z-50 bg-ink/50 md:hidden" onClick={() => setMore(false)}>
-          <div className="safe-bottom absolute inset-x-0 bottom-0 rounded-t-2xl bg-white p-4" onClick={(e) => e.stopPropagation()}>
-            <div className="mb-3 px-2">
-              <p className="font-semibold text-ink">{me?.user.name}</p>
-              <p className="text-xs text-ink-60">{positionLabel}</p>
+        <div
+          className="fixed inset-0 z-50 bg-ink/60 backdrop-blur-xs md:hidden transition-opacity"
+          onClick={() => setMore(false)}
+        >
+          <div
+            className="safe-bottom absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-white p-5 shadow-2xl animate-in slide-in-from-bottom"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-line pb-3 mb-3">
+              <div className="min-w-0 pr-2">
+                <p className="font-semibold text-ink truncate text-sm">{me?.user.name}</p>
+                <p className="text-xs text-brand font-medium truncate">{positionLabel}</p>
+              </div>
+              <button
+                onClick={() => setMore(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-paper text-ink-60 hover:bg-paper-sunken text-lg"
+                aria-label="Close drawer"
+              >
+                ✕
+              </button>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2.5">
               {rest.map((i) => (
-                <NavLink key={i.to} to={i.to} className="flex flex-col items-center gap-1 rounded-xl border border-line p-3 text-xs font-semibold text-ink hover:border-brand">
-                  <Icon name={i.icon} />
-                  {i.label}
+                <NavLink
+                  key={i.to}
+                  to={i.to}
+                  onClick={() => setMore(false)}
+                  className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-line p-3 text-xs font-semibold text-ink hover:border-brand hover:bg-brand-sunken/40 transition-all text-center"
+                >
+                  <Icon name={i.icon} size={20} />
+                  <span className="truncate max-w-full">{i.label}</span>
                 </NavLink>
               ))}
-              <button onClick={() => { setMore(false); setShowDemoModal(true); }} className="flex flex-col items-center gap-1 rounded-xl border border-line p-3 text-xs font-semibold text-ink hover:border-brand">
-                <Icon name="users" />
-                Demo Roles
+              <button
+                onClick={() => { setMore(false); setShowDemoModal(true); }}
+                className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-brand/30 bg-brand-sunken/30 p-3 text-xs font-semibold text-brand hover:border-brand transition-all text-center"
+              >
+                <Icon name="users" size={20} />
+                <span>Switch Role</span>
               </button>
-              <NavLink to="/notifications" className="flex flex-col items-center gap-1 rounded-xl border border-line p-3 text-xs font-semibold text-ink">
-                <Icon name="bell" />
-                Alerts
+              <NavLink
+                to="/notifications"
+                onClick={() => setMore(false)}
+                className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-line p-3 text-xs font-semibold text-ink hover:border-brand transition-all text-center"
+              >
+                <Icon name="bell" size={20} />
+                <span>Alerts</span>
               </NavLink>
-              <button onClick={logout} className="flex flex-col items-center gap-1 rounded-xl border border-line p-3 text-xs font-semibold text-danger">
-                <Icon name="logout" />
-                Sign out
+              <button
+                onClick={logout}
+                className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-danger/20 bg-danger-tint/20 p-3 text-xs font-semibold text-danger hover:bg-danger-tint transition-all text-center"
+              >
+                <Icon name="logout" size={20} />
+                <span>Sign out</span>
               </button>
             </div>
           </div>

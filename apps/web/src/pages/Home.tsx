@@ -90,7 +90,7 @@ export default function Home() {
         </div>
 
         {isSuperAdmin && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button onClick={() => setShowAddCampus(true)}>+ Add Campus</Button>
             <Link to="/budget">
               <Button variant="secondary">All Budgets →</Button>
@@ -225,7 +225,7 @@ export default function Home() {
           </div>
 
           {todo.pending_college_budgets > 0 && (
-            <div className="flex items-center justify-between rounded-xl border border-brand bg-brand-sunken p-4 text-ink">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-brand bg-brand-sunken p-4 text-ink">
               <div>
                 <p className="font-display text-base font-bold text-brand">
                   {todo.pending_college_budgets} fund request(s) awaiting your final college approval
@@ -233,7 +233,7 @@ export default function Home() {
                 <p className="text-xs text-ink-60">Advisor-approved requests ready for institutional funding decision.</p>
               </div>
               <Link to="/budget">
-                <Button>Review Requests →</Button>
+                <Button className="w-full sm:w-auto">Review Requests →</Button>
               </Link>
             </div>
           )}
@@ -391,13 +391,13 @@ export default function Home() {
             </Card>
           </div>
 
-          <div className="flex items-center justify-between rounded-xl bg-ink p-4 text-white">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl bg-ink p-4 text-white">
             <div>
               <p className="font-display text-base font-bold">Plan Club Equipment & Event Requirements</p>
               <p className="text-xs text-white/70">Create costing breakdown and submit directly to your Faculty Advisor.</p>
             </div>
             <Link to="/budget">
-              <Button variant="accent">+ New Budget Proposal</Button>
+              <Button variant="accent" className="w-full sm:w-auto">+ New Budget Proposal</Button>
             </Link>
           </div>
         </div>

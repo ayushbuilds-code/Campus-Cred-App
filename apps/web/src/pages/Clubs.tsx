@@ -61,7 +61,7 @@ export default function Clubs() {
       />
 
       {/* Search Bar & Scope Indicator */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-line pb-3">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-ink-60">
             {isManager
@@ -77,7 +77,7 @@ export default function Clubs() {
 
         {allItems.length > 2 && (
           <input
-            className="input !w-72 text-xs"
+            className="input w-full sm:!w-72 text-xs"
             placeholder="Search your clubs..."
             value={q}
             onChange={(e) => setQ(e.target.value)}

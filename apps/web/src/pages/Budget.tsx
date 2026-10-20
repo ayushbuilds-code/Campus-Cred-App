@@ -350,7 +350,7 @@ export default function Budget() {
                         </div>
 
                         {/* Status & Action Buttons */}
-                        <div className="flex flex-col items-end gap-2">
+                        <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-line">
                           <Badge tone={statusInfo.tone}>{statusInfo.label}</Badge>
 
                           {/* Stage 1: Faculty Advisor Review */}
@@ -358,6 +358,7 @@ export default function Budget() {
                             <Button
                               small
                               variant="accent"
+                              className="w-full sm:w-auto"
                               onClick={() => { setAdvisorModal(b); setDecisionNote(''); }}
                             >
                               Advisor Review →
@@ -368,6 +369,7 @@ export default function Budget() {
                           {canCollegeDecide && (
                             <Button
                               small
+                              className="w-full sm:w-auto"
                               onClick={() => { setCollegeModal(b); setDecisionNote(''); }}
                             >
                               College Decision →
@@ -376,14 +378,14 @@ export default function Budget() {
 
                           {/* Draft Submit */}
                           {canSubmitDraft && (
-                            <Button small variant="accent" onClick={() => submitDraft(b.id)}>
+                            <Button small variant="accent" className="w-full sm:w-auto" onClick={() => submitDraft(b.id)}>
                               Submit to Advisor
                             </Button>
                           )}
 
                           {/* Revisions Needed */}
                           {canRevise && (
-                            <Button small variant="secondary" onClick={() => setEditModal(b)}>
+                            <Button small variant="secondary" className="w-full sm:w-auto" onClick={() => setEditModal(b)}>
                               Revise Proposal
                             </Button>
                           )}

@@ -360,14 +360,14 @@ function Users() {
         {loading && !data ? <Loading /> : error ? <ErrorBox error={error} retry={reload} /> : (
           <ul className="max-h-[34rem] divide-y divide-line overflow-y-auto text-xs">
             {data.items.map((u: any) => (
-              <li key={u.id} className="flex items-center justify-between gap-2 py-2.5">
-                <span className="min-w-0 flex-1">
+              <li key={u.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
+                <span className="min-w-0 flex-1 basis-48">
                   <span className="font-semibold text-sm text-ink">{u.name}</span>
                   <span className="block truncate text-ink-60">
                     {u.email}{u.student_code ? ` · ${u.student_code}` : ''} · {u.campus_name || 'Global'}
                   </span>
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <Badge>{ROLE[u.system_role] || u.system_role}</Badge>
                   <Button small variant="secondary" onClick={() => setEditingUser(u)}>Edit</Button>
                   <Button small variant="danger" onClick={() => remove(u)}>Delete</Button>
