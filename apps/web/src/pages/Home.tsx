@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { api, useApi } from '../lib/api';
-import { Badge, Button, Card, CardTitle, Empty, ErrorBox, Field, Loading, Modal, PageHeader, StatusBadge, useAction } from '../components/ui';
+import { Badge, Button, Card, CardTitle, Empty, ErrorBox, Field, Icon, Loading, Modal, PageHeader, StatusBadge, useAction } from '../components/ui';
 import { fmtDate, firstName, BUDGET_STATUS_LABELS } from '../lib/format';
 
 export default function Home() {
@@ -270,11 +270,15 @@ export default function Home() {
                   <p className="text-xs text-ink-60">Add new student clubs and assign faculty advisors.</p>
                 </Link>
                 <Link to="/budget" className="block p-3 rounded-lg border border-line bg-white hover:border-brand">
-                  <p className="font-semibold text-sm text-ink">💼 College Budget Disbursals</p>
+                  <p className="font-semibold text-sm text-ink flex items-center gap-1.5">
+                    <Icon name="briefcase" size={15} /> College Budget Disbursals
+                  </p>
                   <p className="text-xs text-ink-60">Inspect itemized costing sheets and grant final college sanctions.</p>
                 </Link>
                 <Link to="/admin" className="block p-3 rounded-lg border border-line bg-white hover:border-brand">
-                  <p className="font-semibold text-sm text-ink">👥 Student & Advisor Roster</p>
+                  <p className="font-semibold text-sm text-ink flex items-center gap-1.5">
+                    <Icon name="users" size={15} /> Student & Advisor Roster
+                  </p>
                   <p className="text-xs text-ink-60">Manage students and advisors registered to this campus.</p>
                 </Link>
               </div>

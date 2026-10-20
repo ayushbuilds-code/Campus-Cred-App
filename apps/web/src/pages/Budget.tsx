@@ -12,6 +12,7 @@ import {
   Loading,
   Modal,
   PageHeader,
+  Icon,
   useAction,
 } from '../components/ui';
 import { fmtDate, fmtDateTime, BUDGET_STATUS_LABELS } from '../lib/format';
@@ -302,7 +303,7 @@ export default function Budget() {
                                 rel="noreferrer"
                                 className="font-semibold text-brand hover:underline inline-flex items-center gap-1"
                               >
-                                ↗ Google Sheet
+                                <Icon name="external" size={13} /> Google Sheet
                               </a>
                             )}
                             {b.supporting_docs && (
@@ -312,7 +313,7 @@ export default function Budget() {
                                 rel="noreferrer"
                                 className="font-semibold text-brand hover:underline inline-flex items-center gap-1"
                               >
-                                📄 Supporting Docs
+                                <Icon name="file" size={13} /> Supporting Docs
                               </a>
                             )}
                             {parsedItems.length > 0 && (
@@ -327,9 +328,9 @@ export default function Budget() {
                             <button
                               type="button"
                               onClick={() => setTimelineModal(b)}
-                              className="font-semibold text-ink-60 hover:text-ink underline"
+                              className="font-semibold text-ink-60 hover:text-ink underline inline-flex items-center gap-1"
                             >
-                              🕒 Approval Timeline & Audit Trail
+                              <Icon name="clock" size={13} /> Approval Timeline & Audit Trail
                             </button>
                           </div>
 

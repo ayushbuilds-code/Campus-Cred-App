@@ -15,6 +15,7 @@ import {
   PageHeader,
   StatusBadge,
   Tabs,
+  Icon,
   useAction,
 } from '../components/ui';
 import { fmtDateTime, fmtWeekday, ROLE } from '../lib/format';
@@ -719,8 +720,8 @@ function AcademicCalendarManager() {
                       </td>
                       {isSuperAdmin && (
                         <td className="py-2.5">
-                          <span className="font-semibold text-brand text-[11px] bg-brand-sunken px-2 py-0.5 rounded">
-                            🏛️ {d.campus_name || 'Campus'}
+                          <span className="font-semibold text-brand text-[11px] bg-brand-sunken px-2 py-0.5 rounded inline-flex items-center gap-1">
+                            <Icon name="campus" size={12} /> {d.campus_name || 'Campus'}
                           </span>
                         </td>
                       )}
@@ -894,8 +895,8 @@ function AdminImportDaysModal({ onClose, onDone }: { onClose: () => void; onDone
         />
         {result && (
           <div className="rounded-lg bg-paper-sunken p-3 text-xs border border-line">
-            <p className="font-semibold text-ink">
-              ✅ <b>{result.created}</b> dates added, <b>{result.skipped}</b> already on the calendar.
+            <p className="font-semibold text-ink flex items-center gap-1.5">
+              <span className="text-ok inline-flex"><Icon name="check" size={15} /></span> <b>{result.created}</b> dates added, <b>{result.skipped}</b> already on the calendar.
             </p>
             {result.errors?.map((x: string) => (
               <p key={x} className="text-danger mt-1">{x}</p>

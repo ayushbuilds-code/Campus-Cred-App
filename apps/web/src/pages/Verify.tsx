@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, useApi } from '../lib/api';
-import { Button, Card, Field, Loading, Stamp, useAction } from '../components/ui';
+import { Button, Card, Field, Icon, Loading, Stamp, useAction } from '../components/ui';
 import { fmtDate } from '../lib/format';
 
 // Public page: no sign-in. Anyone with a certificate ID (or its QR code) can check it.
@@ -62,7 +62,7 @@ function FileCheck({ id }: { id: string }) {
       <h2 className="font-display text-lg font-bold">Check a PDF you were given</h2>
       <p className="mt-1 text-sm text-ink-60">Upload the PDF to confirm it is exactly the file CampusCred issued. Even a one-letter change fails the check.</p>
       <form onSubmit={submit} className="mt-3 space-y-3"><Field label="Certificate PDF"><input className="input !py-2" type="file" accept="application/pdf,.pdf" onChange={(e) => { setFile(e.target.files?.[0] || null); setRes(null); }} required /></Field><Button type="submit" loading={busy}>Check this file</Button></form>
-      {res && <div role="status" className={`mt-3 rounded-lg p-3 text-sm font-semibold ${res.match ? 'bg-ok-tint text-ok' : 'bg-danger-tint text-danger'}`}>{res.match ? '✓ ' : '✕ '}{res.message}</div>}
+      {res && <div role="status" className={`mt-3 rounded-lg p-3 text-sm font-semibold flex items-center gap-2 ${res.match ? 'bg-ok-tint text-ok' : 'bg-danger-tint text-danger'}`}><span className="inline-flex shrink-0"><Icon name={res.match ? 'check' : 'close'} size={16} /></span>{res.message}</div>}
     </Card>
   );
 }

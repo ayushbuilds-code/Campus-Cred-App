@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api, useApi } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import PlanModal from '../components/PlanModal';
-import { Badge, Button, Card, Empty, ErrorBox, Field, Loading, Modal, PageHeader, StatusBadge, useAction } from '../components/ui';
+import { Badge, Button, Card, Empty, ErrorBox, Field, Icon, Loading, Modal, PageHeader, StatusBadge, useAction } from '../components/ui';
 import { fmtWeekday, todayIso } from '../lib/format';
 
 export default function ClubDays() {
@@ -79,8 +79,8 @@ export default function ClubDays() {
                     {isToday && <span className="ml-2"><Badge tone="brand">Today</Badge></span>}
                     {isRecent && <span className="ml-2"><Badge>Recent</Badge></span>}
                     {d.campus_name && isSuperAdmin && (
-                      <span className="ml-2 text-xs font-semibold text-brand bg-brand-sunken px-2 py-0.5 rounded">
-                        🏛️ {d.campus_name}
+                      <span className="ml-2 text-xs font-semibold text-brand bg-brand-sunken px-2 py-0.5 rounded inline-flex items-center gap-1">
+                        <Icon name="campus" size={12} /> {d.campus_name}
                       </span>
                     )}
                   </h2>
@@ -276,8 +276,8 @@ function ImportDays({ onClose, onDone }: { onClose: () => void; onDone: () => vo
         />
         {result && (
           <div className="rounded-lg bg-paper-sunken p-3 text-xs border border-line">
-            <p className="font-semibold text-ink">
-              ✅ <b>{result.created}</b> dates added, <b>{result.skipped}</b> already on the calendar.
+            <p className="font-semibold text-ink flex items-center gap-1.5">
+              <span className="text-ok inline-flex"><Icon name="check" size={15} /></span> <b>{result.created}</b> dates added, <b>{result.skipped}</b> already on the calendar.
             </p>
             {result.errors?.map((x: string) => (
               <p key={x} className="text-danger mt-1">{x}</p>

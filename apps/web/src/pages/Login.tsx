@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
-import { Button, Field, Stamp, useAction, useToast } from '../components/ui';
+import { Button, Field, Icon, Stamp, useAction, useToast } from '../components/ui';
 
 export default function Login() {
   const { me, login } = useAuth();
@@ -60,9 +60,15 @@ export default function Login() {
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
-            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Bengaluru Campus</span>
-            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Gazhiabad Campus</span>
-            <span className="rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">🏛️ Jaipur Campus</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">
+              <Icon name="campus" size={13} /> Bengaluru Campus
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">
+              <Icon name="campus" size={13} /> Gazhiabad Campus
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-semibold text-white/90">
+              <Icon name="campus" size={13} /> Jaipur Campus
+            </span>
           </div>
         </div>
 

@@ -13,6 +13,7 @@ import {
   Modal,
   PageHeader,
   StatusBadge,
+  Icon,
   useAction,
 } from '../components/ui';
 
@@ -128,8 +129,8 @@ export default function Clubs() {
                         {c.name}
                       </Link>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[11px] font-semibold text-brand bg-brand-sunken px-2 py-0.2 rounded">
-                          🏛️ {c.campus}
+                        <span className="text-[11px] font-semibold text-brand bg-brand-sunken px-2 py-0.5 rounded inline-flex items-center gap-1">
+                          <Icon name="campus" size={12} /> {c.campus}
                         </span>
                         {c.category && (
                           <span className="text-[11px] text-ink-60">· {c.category}</span>
@@ -153,8 +154,8 @@ export default function Clubs() {
                   </p>
 
                   {c.meeting_rules && (
-                    <p className="mt-2 text-[11px] text-ink-60 bg-paper-sunken p-1.5 rounded border border-line/60">
-                      📅 <span className="font-semibold text-ink">Schedule:</span> {c.meeting_rules}
+                    <p className="mt-2 text-[11px] text-ink-60 bg-paper-sunken p-1.5 rounded border border-line/60 flex items-center gap-1.5">
+                      <Icon name="calendar" size={13} /> <span className="font-semibold text-ink">Schedule:</span> {c.meeting_rules}
                     </p>
                   )}
 

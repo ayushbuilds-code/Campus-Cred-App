@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, useApi } from '../lib/api';
 import { useAuth } from '../lib/auth';
-import { Badge, Button, Card, Empty, ErrorBox, Field, Loading, Modal, PageHeader, StatusBadge, useAction } from '../components/ui';
+import { Badge, Button, Card, Empty, ErrorBox, Field, Icon, Loading, Modal, PageHeader, StatusBadge, useAction } from '../components/ui';
 import { fmtDateTime, fromLocalInput } from '../lib/format';
 
 export default function Events() {
@@ -34,9 +34,13 @@ export default function Events() {
                   <div>
                     <h2 className="font-display text-xl font-bold">{e.name}</h2>
                     {e.campus_name ? (
-                      <span className="text-xs text-brand font-medium">🏛️ {e.campus_name}</span>
+                      <span className="inline-flex items-center gap-1 text-xs text-brand font-medium">
+                        <Icon name="campus" size={12} /> {e.campus_name}
+                      </span>
                     ) : (
-                      <span className="text-xs text-saffron font-medium">🌐 Inter-Campus Event</span>
+                      <span className="inline-flex items-center gap-1 text-xs text-saffron font-medium">
+                        <Icon name="globe" size={12} /> Inter-Campus Event
+                      </span>
                     )}
                   </div>
                   <StatusBadge status={e.status} />

@@ -155,10 +155,10 @@ export default function Layout() {
               style={{ colorScheme: 'dark', backgroundColor: '#183640', color: '#ffffff' }}
               className="w-full rounded-lg bg-[#183640] border border-white/20 text-xs text-white px-2.5 py-2 focus:outline-none focus:ring-1 focus:ring-brand font-medium cursor-pointer"
             >
-              <option value="" style={{ backgroundColor: '#10242B', color: '#ffffff' }}>🌐 All Campuses (Consolidated)</option>
+              <option value="" style={{ backgroundColor: '#10242B', color: '#ffffff' }}>All Campuses (Consolidated)</option>
               {allCampuses.map((c) => (
                 <option key={c.id} value={c.id} style={{ backgroundColor: '#10242B', color: '#ffffff' }}>
-                  🏛️ {c.name} ({c.city})
+                  {c.name} ({c.city})
                 </option>
               ))}
             </select>
@@ -220,16 +220,19 @@ export default function Layout() {
               {isSuperAdmin ? (
                 selectedCampusId ? (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-sunken px-2.5 py-0.5 font-semibold text-brand border border-brand/20">
-                    🏛️ {allCampuses.find((c) => c.id === selectedCampusId)?.name || 'Campus Filtered'}
+                    <Icon name="campus" size={13} />
+                    <span>{allCampuses.find((c) => c.id === selectedCampusId)?.name || 'Campus Filtered'}</span>
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-sunken px-2.5 py-0.5 font-semibold text-ink border border-line">
-                    🌐 Consolidated (All Campuses)
+                    <Icon name="globe" size={13} />
+                    <span>Consolidated (All Campuses)</span>
                   </span>
                 )
               ) : (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-paper-sunken px-2.5 py-0.5 font-semibold text-ink border border-line">
-                  🏛️ {me?.campus?.name || 'My Campus'}
+                  <Icon name="campus" size={13} />
+                  <span>{me?.campus?.name || 'My Campus'}</span>
                 </span>
               )}
             </div>
