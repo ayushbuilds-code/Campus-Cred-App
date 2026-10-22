@@ -27,6 +27,8 @@
     "fsevents@2.3.3": true
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/core": "^8.5.3",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.10.0",
     "cors": "^2.8.5",
@@ -38,5 +40,8 @@
     "pdfkit": "^0.15.1",
     "qrcode": "^1.5.4",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.3"
   }
 }
