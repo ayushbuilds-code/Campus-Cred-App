@@ -64,7 +64,22 @@ export function createApp({ cfg, db, now }) {
   app.set('etag', false); // API responses are never cached; skip hashing every body (static files keep their own validators)
   app.set('trust proxy', 1);
   app.use(helmet({ crossOriginEmbedderPolicy: false }));
-  app.use(cors({ origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : false }));
+  // Always allow Capacitor native-app origins so the Android/iOS APK can reach the API.
+  // Additional origins can be added via CORS_ORIGIN (comma-separated) in the environment.
+  const NATIVE_ORIGINS = ['capacitor://localhost', 'https://localhost', 'http://localhost'];
+  const extraOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()) : [];
+  const allowedOrigins = new Set([...NATIVE_ORIGINS, ...extraOrigins]);
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        // Allow requests with no origin (curl, Postman, same-origin server-side)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.has(origin)) return callback(null, true);
+        callback(null, false);
+      },
+      credentials: true,
+    }),
+  );
   app.use(express.json({ limit: '300kb' }));
 
   const api = express.Router();
