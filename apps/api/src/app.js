@@ -87,6 +87,25 @@ export function createApp({ cfg, db, now }) {
   app.use(helmet({ crossOriginEmbedderPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(express.json({ limit: '300kb' }));
 
+// --------- DEBUG ENDPOINT (dev only) ---------
+// This route is only active when NODE_ENV=development. It returns the first 100 users.
+if (process.env.NODE_ENV === 'development') {
+  const sqlite3 = require('better-sqlite3');
+  const path = require('path');
+  const dbPath = path.resolve(__dirname, '../../data/db.sqlite');
+  const debugDb = new sqlite3(dbPath, { readonly: true });
+  app.get('/admin/debug/users', (req, res) => {
+    try {
+      const rows = debugDb.prepare('SELECT id, name, email, system_role, created_at FROM users ORDER BY id DESC LIMIT 100').all();
+      res.json({ ok: true, count: rows.length, rows });
+    } catch (e) {
+      console.error('🔴 Debug endpoint error', e);
+      res.status(500).json({ ok: false, error: e.message });
+    }
+  });
+}
+// --------------------------------------------
+
   const api = express.Router();
   api.use(limited({ windowMs: 60 * 1000, limit: 900, skip: (req) => req.path.startsWith('/checkin') }));
   api.use((req, res, next) => {
