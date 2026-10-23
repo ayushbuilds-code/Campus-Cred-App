@@ -63,9 +63,10 @@ export function createApp({ cfg, db, now }) {
   app.disable('x-powered-by');
   app.set('etag', false); // API responses are never cached; skip hashing every body (static files keep their own validators)
   app.set('trust proxy', 1);
-  app.use(helmet({ crossOriginEmbedderPolicy: false }));
+
   // Always allow Capacitor native-app origins so the Android/iOS APK can reach the API.
   // Additional origins can be added via CORS_ORIGIN (comma-separated) in the environment.
+  // cors() must run BEFORE helmet() so its headers are not overridden.
   const NATIVE_ORIGINS = ['capacitor://localhost', 'https://localhost', 'http://localhost'];
   const extraOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim()) : [];
   const allowedOrigins = new Set([...NATIVE_ORIGINS, ...extraOrigins]);
@@ -80,6 +81,10 @@ export function createApp({ cfg, db, now }) {
       credentials: true,
     }),
   );
+
+  // crossOriginResourcePolicy must be 'cross-origin' so browsers can read API responses
+  // from a different origin (capacitor://localhost → campuscred-gd43.onrender.com).
+  app.use(helmet({ crossOriginEmbedderPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(express.json({ limit: '300kb' }));
 
   const api = express.Router();
