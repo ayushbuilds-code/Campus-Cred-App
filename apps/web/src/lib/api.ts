@@ -6,7 +6,7 @@ export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (t: string | null) => (t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY));
 export const getCampusScope = () => localStorage.getItem('cc_selected_campus');
 
-const ANDROID_API_BASE = 'https://campuscred-gd43.onrender.com/api/v1';
+const ANDROID_API_BASE = 'https://campus-cred-app.onrender.com/api/v1';
 
 export function getApiBase(): string {
   if (import.meta.env.VITE_API_BASE) {
